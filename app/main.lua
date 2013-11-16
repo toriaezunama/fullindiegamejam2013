@@ -1,7 +1,9 @@
 _G.kASSETS 	= "assets/"
 			  	  require( "type-exts")  -- extends lua types
 _G.Utils 	= require( "Utils" )
-_G.Sprite 	= require( "Sprite")
+_G.Sprite 	= require( "Sprite" )
+_G.Entity   = require( "Entity" )
+_G.Player 	= require( "Player" )
 -- TODO _G.Input = require( "input" )
 
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )
@@ -24,10 +26,7 @@ MOAISim.pushRenderPass( layer ) -- DEPRICATED
 --==== BG colour ====
 Utils.setBackgroundColor( 0, 0, 0 )
 
-local sprite = Sprite.new( kASSETS .. "characters-32x48.png" , 32, 48 )
-sprite:addAnim( "walk-idle", {2})
-sprite:addAnim( "walk-down", {1,3})
-sprite:play( "walk-down", true  )
-layer:insertProp( sprite )
+local player = Player.get()
+player:setLayer( layer )
 
-sprite:moveLoc( 50, 50, 1)
+player:setLoc( 50, 50 )

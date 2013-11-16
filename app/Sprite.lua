@@ -26,6 +26,7 @@ new.__index = MOAIProp.getInterfaceTable()
 new.__moai_class = MOAIProp
 
 function new:init( path, sw, sh )
+	print( 'Sprite:init' )
 	local texture = MOAITexture.new()
 	texture:load( path )
 	texture:setFilter( MOAITexture.GL_NEAREST ) -- Prevent fuzzy images

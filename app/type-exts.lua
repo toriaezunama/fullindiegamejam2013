@@ -6,3 +6,7 @@ function table.copy( from, to )
 	end
 	return to
 end
+
+function table.push( t, obj )
+	t[ #t + 1 ] = obj
+end

@@ -23,7 +23,7 @@ function Player:init()
 	Player.__super.init(self)
 
 	-- 16 x 16 sprites
-	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, AnimData.babyCrawl, 'Player'  )	
+	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, AnimData.punk, 'Player'  )	
 	
 	self.prop:play( "idle-up", false )	
 end
@@ -37,9 +37,7 @@ function player:update( deltatime )
 	-- print( "updating", deltatime )
 	if Input.UP then
 		self:addY( -dist )
-		if not (Input.LEFT or Input.RIGHT ) then
-			sprite:play( "walk-up", true )
-		end
+		sprite:play( "walk-up", true )
 	elseif Input.DOWN then
 		self:addY( dist )
 		if not (Input.LEFT or Input.RIGHT ) then
@@ -48,10 +46,14 @@ function player:update( deltatime )
 	end
 	if Input.LEFT then
 		self:addX( -dist )
-		sprite:play( "walk-left", true )
+		if not Input.UP then
+			sprite:play( "walk-left", true )
+		end
 	elseif Input.RIGHT then
 		self:addX( dist )
-		sprite:play( "walk-right", true )
+		if not Input.UP then
+			sprite:play( "walk-right", true )
+		end
 	end
 	if Input.NEUTRAL then
 		if Input.PREV_UP then

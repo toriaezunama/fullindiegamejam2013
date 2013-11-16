@@ -3,6 +3,7 @@ local Utils 			= _G.Utils
 local Input 			= _G.Input
 local Sprite 			= _G.Sprite
 local Entity 			= _G.Entity
+local Character 		= _G.Character
 
 local print 			= _G.print
 
@@ -11,7 +12,8 @@ local class = Utils.class
 local P = {}
 setfenv( 1, P )
 
-local Player = class( Entity.new )
+local Player = class( 'Player', Character.new )
+-- Utils.printClassInfo( Player )
 
 function Player:init()
 	print( 'Player:init' )
@@ -20,24 +22,19 @@ function Player:init()
 	Player.__super.init(self)
 
 	-- 16 x 16 sprites
-	local sprite = Sprite.new( kASSETS .. "characters-32x48.png" , 32, 48, 'Player' )
-	sprite:addAnim( "idle-down", {2})
-	sprite:addAnim( "walk-down", {1,3})
-
-	sprite:addAnim( "idle-up", {50})
-	sprite:addAnim( "walk-up", {49,51})
-
-	sprite:addAnim( "idle-left", {18})
-	sprite:addAnim( "walk-left", {17,19})
-
-	sprite:addAnim( "idle-right", {34})
-	sprite:addAnim( "walk-right", {33,35})
-
-	sprite:play( "idle-up", false )	
-
-	self.prop = sprite
-
-	sprite:dump()
+	local animData = {
+		{ name="idle-down", frames= {2} },
+		{ name="walk-down", frames= {1,3} },
+		{ name="idle-up", frames= {50} },
+		{ name="walk-up", frames= {49,51} },
+		{ name="idle-left", frames= {18} },
+		{ name="walk-left", frames= {17,19} },
+		{ name="idle-right", frames= {34} },
+		{ name="walk-right", frames= {33,35} },
+	}
+	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, animData, 'Player'  )	
+	
+	self.prop:play( "idle-up", false )	
 end
 
 -- Singleton

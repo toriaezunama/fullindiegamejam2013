@@ -4,6 +4,7 @@ _G.Utils 	= require( "Utils" )
 _G.Input 	= require( "Input" )
 _G.Sprite 	= require( "Sprite" )
 _G.Entity   = require( "Entity" )
+_G.Character= require( "Character" )
 _G.Player 	= require( "Player" )
 
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )

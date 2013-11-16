@@ -20,7 +20,8 @@ local class = Utils.class
 local E = {}
 setfenv( 1, E )
 
-new = class()
+new = class( 'Entity' )
+-- Utils.printClassInfo( new )
 
 function new:init()
 	print( 'Entity:init' )

@@ -1,10 +1,10 @@
 _G.kASSETS 	= "assets/"
 			  	  require( "type-exts")  -- extends lua types
 _G.Utils 	= require( "Utils" )
+_G.Input 	= require( "Input" )
 _G.Sprite 	= require( "Sprite" )
 _G.Entity   = require( "Entity" )
 _G.Player 	= require( "Player" )
--- TODO _G.Input = require( "input" )
 
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_WORLD_BOUNDS, 1, 0, 0, 1, 1 )

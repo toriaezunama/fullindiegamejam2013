@@ -11,6 +11,7 @@ local setmetatable 	= _G.setmetatable
 local MOAIProp 		= _G.MOAIProp
 local MOAISim 			= _G.MOAISim
 local MOAICoroutine 	= _G.MOAICoroutine
+local MOAITransform  = _G.MOAITransform
 local coroutine 		= _G.coroutine
 
 local class = Utils.class
@@ -76,6 +77,46 @@ function new:setLoc( x, y )
 	if prop then
 		prop:setLoc( x, y )
 	end
+end
+
+function new:setX( x )
+	local prop = self.prop
+	if prop then
+    	prop:setAttr( MOAITransform.ATTR_X_LOC, x )
+   end
+   return self -- chaining
+end
+
+function new:setY( y )
+	local prop = self.prop
+	if prop then
+		prop:setAttr( MOAITransform.ATTR_Y_LOC, y )
+	end
+   return self -- chaining
+end
+
+function new:getX()
+	local prop = self.prop
+	if prop then
+    	return prop:getAttr( MOAITransform.ATTR_X_LOC )
+   end
+   return 0
+end
+
+function new:getY()
+	local prop = self.prop
+	if prop then
+		return prop:getAttr( MOAITransform.ATTR_Y_LOC )
+	end
+	return 0
+end
+
+function new:addX( x )
+	self:setX( self:getX() + x )
+end
+
+function new:addY( y )
+	self:setY( self:getY() + y )
 end
 
 return E

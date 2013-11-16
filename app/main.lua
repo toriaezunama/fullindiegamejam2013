@@ -1,4 +1,5 @@
 _G.kASSETS 	= "assets/"
+_G.AnimData = require( "anim-data" )
 			  	  require( "type-exts")  -- extends lua types
 _G.Utils 	= require( "Utils" )
 _G.Input 	= require( "Input" )

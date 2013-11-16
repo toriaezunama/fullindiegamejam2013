@@ -25,6 +25,8 @@ new = class()
 new.__index = MOAIProp.getInterfaceTable()
 new.__moai_class = MOAIProp
 
+-- Utils.printClassInfo( new )
+
 function new:init( path, sw, sh, name )
 	name = name or 'unnamed-sprite'
 	self.name = name

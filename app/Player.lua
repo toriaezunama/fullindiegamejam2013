@@ -4,6 +4,7 @@ local Input 			= _G.Input
 local Sprite 			= _G.Sprite
 local Entity 			= _G.Entity
 local Character 		= _G.Character
+local AnimData 		= _G.AnimData
 
 local print 			= _G.print
 
@@ -22,17 +23,7 @@ function Player:init()
 	Player.__super.init(self)
 
 	-- 16 x 16 sprites
-	local animData = {
-		{ name="idle-down", frames= {2} },
-		{ name="walk-down", frames= {1,3} },
-		{ name="idle-up", frames= {50} },
-		{ name="walk-up", frames= {49,51} },
-		{ name="idle-left", frames= {18} },
-		{ name="walk-left", frames= {17,19} },
-		{ name="idle-right", frames= {34} },
-		{ name="walk-right", frames= {33,35} },
-	}
-	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, animData, 'Player'  )	
+	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, AnimData.babyCrawl, 'Player'  )	
 	
 	self.prop:play( "idle-up", false )	
 end

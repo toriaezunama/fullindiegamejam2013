@@ -1,7 +1,8 @@
-			  require( "type-exts")  -- extends lua types
-_G.Utils = require( "utils" )
+_G.kASSETS 	= "assets/"
+			  	  require( "type-exts")  -- extends lua types
+_G.Utils 	= require( "Utils" )
+_G.Sprite 	= require( "Sprite")
 -- TODO _G.Input = require( "input" )
-_G.kASSETS = "assets/"
 
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_WORLD_BOUNDS, 1, 0, 0, 1, 1 )
@@ -21,25 +22,12 @@ layer:setViewport( viewport )
 MOAISim.pushRenderPass( layer ) -- DEPRICATED
 
 --==== BG colour ====
-local fb = MOAIGfxDevice:getFrameBuffer()
-fb:setClearColor( 0, 0, 0 )
+Utils.setBackgroundColor( 0, 0, 0 )
 
---==== Sprite sheet ====
-local texture = MOAITexture.new()
-texture:load( kASSETS .. "characters-32x48.png" )
-texture:setFilter( MOAITexture.GL_NEAREST ) -- Prevent fuzzy images
-local textureW, textureH = texture:getSize()
-local spriteW, spriteH = 32, 48
-local hSpriteW, hSpriteH = spriteW * 0.5, spriteH * 0.5
+local sprite = Sprite.new( kASSETS .. "characters-32x48.png" , 32, 48 )
+sprite:addAnim( "walk-idle", {2})
+sprite:addAnim( "walk-down", {1,3})
+sprite:play( "walk-down", true  )
+layer:insertProp( sprite )
 
-local spriteSheet = MOAITileDeck2D.new()
-spriteSheet:setTexture( texture )
-spriteSheet:setSize( textureW/spriteW, textureH/spriteH )
-spriteSheet:setRect( -hSpriteW, hSpriteH, hSpriteW, -hSpriteH )
-
-local prop = MOAIProp.new()
-prop:setDeck( spriteSheet )
-layer:insertProp( prop )
-
-prop:moveLoc( 50, 50, 1)
-
+sprite:moveLoc( 50, 50, 1)

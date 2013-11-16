@@ -25,8 +25,11 @@ new = class()
 new.__index = MOAIProp.getInterfaceTable()
 new.__moai_class = MOAIProp
 
-function new:init( path, sw, sh )
-	print( 'Sprite:init' )
+function new:init( path, sw, sh, name )
+	name = name or 'unnamed-sprite'
+	self.name = name
+	-- print( 'Sprite:init' )
+
 	local texture = MOAITexture.new()
 	texture:load( path )
 	texture:setFilter( MOAITexture.GL_NEAREST ) -- Prevent fuzzy images
@@ -78,14 +81,28 @@ function new:addAnim( name, animFrames, fps )
 	self.anims[ name ] = anim
 end
 
-function new:play( name, loop )    
+function new:play( name, loop )  
+	local anims = self.anims
+	local currentAnimName = self.currentAnimName
+
+	if currentAnimName == name then
+		return -- already playing
+	end
+	
+	if currentAnimName then
+		local anim = anims[ currentAnimName ]
+		anim:stop()
+	end
+
 	if not Utils.isBool( loop ) then
 		loop = false
 	end
 
-	local anim = self.anims[ name ]
+	local anim = anims[ name ]
 	assert( name and Utils.isString( name ) and anim )
 	
+	self.currentAnimName = name
+
 	if loop then
 		anim:setMode( MOAIAnim.LOOP )
 	else
@@ -93,6 +110,14 @@ function new:play( name, loop )
 	end
 
 	anim:start()
+end
+
+-- DEBUG
+function new:dump()
+	Utils.printf( 'Sprite[%s]:dump', self.name )
+	for name, anim in pairs( self.anims ) do
+		print( name, anim )
+	end
 end
 
 return S

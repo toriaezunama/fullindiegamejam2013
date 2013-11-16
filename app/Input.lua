@@ -87,6 +87,10 @@ UP 	= false
 DOWN 	= false
 LEFT 	= false
 RIGHT	= false
+PREV_UP 		= false
+PREV_DOWN 	= false
+PREV_LEFT 	= false
+PREV_RIGHT	= false
 T 		= false
 L 		= false
 R 		= false
@@ -98,6 +102,7 @@ R3		= false
 HOME  = false
 BACK  = false
 START = false 
+NEUTRAL=false
 
 --==== Buttons ====
 setJoystickCallback( "T", function( aState ) T = aState --[[print( "T", aState )]] end )
@@ -116,10 +121,16 @@ setJoystickCallback( "Start", function( aState ) START = aState --[[print( "Star
 
 setJoystickCallback( "DPad", function( aState ) 
 	-- print( string.format( "DPad: %08x", aState ) )
+	PREV_UP 		= UP
+	PREV_DOWN 	= DOWN
+	PREV_LEFT 	= LEFT
+	PREV_RIGHT	= RIGHT
+
 	UP 	= false
 	DOWN 	= false
 	LEFT 	= false
 	RIGHT	= false
+	NEUTRAL = false
 
 	if aState == 0xE then -- up 
 		-- print( "DPad - U", aState ) 
@@ -151,6 +162,7 @@ setJoystickCallback( "DPad", function( aState )
 		RIGHT = true
 	elseif aState == 0xF then -- neutral
 		-- print( "DPad - Neutral", aState ) 
+		NEUTRAL = true
 	end
 end )
 

@@ -1,6 +1,7 @@
 local kASSETS 			= _G.kASSETS
 local Utils 			= _G.Utils
 local MapLayer 		= _G.MapLayer
+local CollisionLayer = _G.CollisionLayer
 
 local tostring			= _G.tostring
 local require 			= _G.require
@@ -77,8 +78,10 @@ function new:init( path )
 	self.mapLayersMap = mapLayersMap
 	for i, layer in ipairs( mapData.layers ) do
 		if layer.type == "tilelayer" then
-			if layer.name ~= "collision" then
-				local tileSetName, deck = self:_getDeckForGid( _getFirstNonZeroTileIndex( layer.data ) )
+			local tileSetName, deck = self:_getDeckForGid( _getFirstNonZeroTileIndex( layer.data ) )
+			if layer.name == "collision" then
+				self.collisionLayer = CollisionLayer.new( layer.width, layer.height, layer.data, deck.firstgid )
+			else
 				-- print( tileSetName, deck )
 				local mapLayer = MapLayer.new( deck, TILE_WIDTH, TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
 				mapLayer:setLoc( layer.x, layer.y )

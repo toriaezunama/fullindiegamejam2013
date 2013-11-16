@@ -47,6 +47,15 @@ function new:init()
 	end)
 end
 
+function new:setParent(parent)
+	assert( Utils.isUserdata( parent ) )
+   
+   self.parent = parent
+ 
+	self:clearAttrLink(MOAITransform.INHERIT_TRANSFORM) 
+	self:setAttrLink(MOAITransform.INHERIT_TRANSFORM, parent, MOAITransform.TRANSFORM_TRAIT)
+end
+
 -- Borrowed from 'flower's function DisplayObject:setLayer(layer)
 function new:setLayer( layer )
 	local myLayer = self.layer
@@ -77,6 +86,13 @@ function new:setLoc( x, y )
 	local prop = self.prop
 	if prop then
 		prop:setLoc( x, y )
+	end
+end
+
+function new:getLoc()
+	local prop = self.prop
+	if prop then
+		return prop:getLoc()
 	end
 end
 

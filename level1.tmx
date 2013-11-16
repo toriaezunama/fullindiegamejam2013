@@ -14,7 +14,7 @@
  </tileset>
  <layer name="ground" width="50" height="50">
   <data>
-   <tile gid="114"/>
+   <tile gid="49"/>
    <tile gid="114"/>
    <tile gid="114"/>
    <tile gid="114"/>

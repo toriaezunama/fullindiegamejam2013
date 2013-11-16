@@ -41,7 +41,10 @@ function new:init( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 
 	for y = 1, tcy do
 		for x = 1, tcx do
-			grid:setTile( x, y, (tiledata[ (y - 1) * tcx + x ] - gidbase) + 1 )
+			local tile = tiledata[ (y - 1) * tcx + x ]
+			if tile > 0 then
+				grid:setTile( x, y, (tile - gidbase) + 1 )
+			end
 		end
 	end
 

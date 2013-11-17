@@ -2,6 +2,7 @@ local assert = _G.assert
 local setmetatable = _G.setmetatable
 local rawget = _G.rawget
 local rawset = _G.rawset
+local tostring = _G.tostring
 
 local G = {}
 setfenv( 1, G )
@@ -17,7 +18,7 @@ setmetatable( G, {
 		end
 	end,
 	__index = function( t, k )
-		return assert( rawget( t, k ) )
+		return assert( rawget( t, k ), tostring( t ) .. "," .. tostring( k ) )
 	end,
 } )
 

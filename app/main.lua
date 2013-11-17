@@ -15,10 +15,13 @@ _G.Sprite 	= require( "Sprite" )
 _G.Entity   = require( "Entity" )
 _G.Camera   = require( "Camera" )
 _G.Character= require( "Character" )
+_G.GoldKnight=require( "GoldKnight" )
 _G.Player 	= require( "Player" )
 _G.MapLayer = require( "MapLayer" )
 _G.CollisionLayer = require( "CollisionLayer" )
 _G.Map      = require( "Map" )
+_G.World    = require( "World")
+_G.GameWorld= require( "GameWorld" )
 
 --==== Setup ====
 MOAISim.openWindow( "FullIndieJam2013", Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT )
@@ -30,23 +33,20 @@ viewport:setScale( Globals.SCREEN_WIDTH, -Globals.SCREEN_HEIGHT )
 viewport:setOffset( -1, 1 )
 
 --==== Layers ====
-local layer = MOAILayer.new()
+local world = GameWorld.new()
 Globals.camera = Camera.new()
-layer:setCamera( Globals.camera:getMOAICamera() )
-layer:setViewport( viewport )
-MOAISim.pushRenderPass( layer ) -- DEPRICATED
-Globals.worldLayer = layer  
+world:setCamera( Globals.camera:getMOAICamera() )
+world:setViewport( viewport )
+MOAISim.pushRenderPass( world ) -- DEPRICATED
+Globals.world = world
 
-layer = MOAILayer.new()
+local layer = MOAILayer.new()
 layer:setViewport( viewport )
 MOAISim.pushRenderPass( layer ) -- DEPRICATED
 Globals.UILayer = layer  
 
 --==== BG colour ====
 Utils.setBackgroundColor( 0, 0, 0 )
-
---==== Map ====
-Globals.map = Map.new( Globals.kLEVELS .. "level1" )
 
 --==== Text ====
 -- local font = Font.new( 
@@ -86,7 +86,7 @@ local function showDebugTextLines( show )
 end
 
 -- Hide to start with
-showDebugLines( false )
+-- showDebugLines( false )
 showDebugTextLines( false )
 
 Input.setKeyboardCallback( function( key, down )
@@ -98,3 +98,6 @@ Input.setKeyboardCallback( function( key, down )
 		showDebugTextLines( debugTextToggle )
 	end 
 end )
+
+--==== START ====
+Globals.world:start()

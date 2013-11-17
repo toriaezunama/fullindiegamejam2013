@@ -1,8 +1,10 @@
 local Utils 			= _G.Utils
+local Globals 			= _G.Globals
 
 local assert   		= _G.assert
 local pairs    		= _G.pairs
 local ipairs    		= _G.ipairs
+local math 				= _G.math
 local type 				= _G.type
 local print 			= _G.print
 local string 			= _G.string
@@ -25,6 +27,8 @@ new = class( 'Entity' )
 
 function new:init()
 	print( 'Entity:init' )
+
+	self.collisionType = 'entity' -- override in derived classes
 
 	--==== Update  ====
 	local prevTime = MOAISim.getDeviceTime()
@@ -54,6 +58,30 @@ function new:setParent(parent)
  
 	self:clearAttrLink(MOAITransform.INHERIT_TRANSFORM) 
 	self:setAttrLink(MOAITransform.INHERIT_TRANSFORM, parent, MOAITransform.TRANSFORM_TRAIT)
+end
+
+-- params are LOCAL space
+function new:setCollisionRect( xMin, yMin, xMax, yMax )
+	xMin = math.min( xMin, xMax )
+	xMax = math.max( xMin, xMax )
+
+	yMin = math.min( yMin, yMax )
+	yMax = math.max( yMin, yMax )
+
+	if self.prop then
+		self.prop:setBounds( xMin, yMin, 0, xMax, yMax, 0 )
+	end
+end
+
+function new:getCollisionRectInWorldCoords()
+	local prop = self.prop
+	local xMin, yMin, xMax, yMax = 0,0,0,0
+	if prop then
+		xMin, yMin, _, xMax, yMax, _ = prop:getBounds()
+		xMin, yMin, _ = prop:modelToWorld( xMin, yMin, 0 )
+		xMax, yMax, _ = prop:modelToWorld( xMax, yMax, 0 )
+	end
+	return xMin, yMin, xMax, yMax
 end
 
 -- Borrowed from 'flower's function DisplayObject:setLayer(layer)
@@ -134,6 +162,10 @@ end
 
 function new:addY( y )
 	self:setY( self:getY() + y )
+end
+
+function new:collide( type )
+	return Globals.world:collide( self, type )
 end
 
 return E

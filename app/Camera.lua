@@ -21,7 +21,6 @@ local MOAIGridSpace	= _G.MOAIGridSpace
 local MOAICamera2D   = _G.MOAICamera2D
 
 local class = Utils.class
-local player = _G.player
 
 -- Seal off to prevent accidentally polluting the global table
 local C = {}
@@ -32,6 +31,8 @@ new = class( "Camera", Entity.new )
 -- Utils.printClassInfo( new )
 
 function new:init()
+	print( 'Camera:init' )
+
 	new.__super.init( self )
 
 	self.prop = MOAICamera2D.new()
@@ -40,9 +41,10 @@ function new:init()
 end
 
 function new:update( deltatime )
+	-- print( 'update' )
 	local x, y = self:getLoc()
 	local px, py = Globals.player:getLoc()
-	local mw, mh = Globals.map:getDims()
+	local mw, mh = Globals.world:getMapDims()
 	local maxX = mw-- - Globals.HALF_SCREEN_WIDTH
 	local maxY = mh-- - Globals.HALF_SCREEN_HEIGHT
 	-- print( mw, mh, maxX, maxY )

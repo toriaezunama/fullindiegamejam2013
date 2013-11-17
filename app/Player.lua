@@ -26,14 +26,21 @@ function Player:init()
 	self:setUpSprite( Globals.kASSETS .. "characters-32x48.png" , 32, 48, AnimData.punk, 'Player'  )	
 	
 	self.prop:play( "idle-up", false )	
+
+	-- Place pivot near feet
+	self.prop:setPiv( 0, 20 )
+
+	self.collisionType = 'col-player'
+	self:setCollisionRect( -10, -2, 10, 24 )
 end
 
 -- Singleton
 local player = Player()
 function player:update( deltatime )
 	local sprite = self.prop
-	local distX = 100 * deltatime
-	local distY = distX
+	local dist = 100 * deltatime
+	local distX = dist
+	local distY = dist
 	local cos45 = 0.70710678118
 	local x, y = self.prop:getLoc()
 
@@ -42,6 +49,7 @@ function player:update( deltatime )
 		distX = distX * cos45
 		distY = distY * cos45
 	end
+	
 	local velocityX = 0
 	local velocityY = 0
 
@@ -56,11 +64,20 @@ function player:update( deltatime )
 		velocityX = distX
 	end
 
-	local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
-	if collided then
-		Globals.debugLabel:setText( "collide" )
-	else
-		Globals.debugLabel:setText( "" )
+	local c = self:collide( 'col-enemy' )
+
+	-- Only test collision if we are moving
+	if velocityX ~= 0 or velocityY ~= 0 then
+		local radius = 40 -- radius of circle around character
+		-- if dist > radius then -- but if we are moving further then
+		-- 	radius = dist 
+		-- end
+		--local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
+		-- if collided then
+		-- 	Globals.debugLabel:setText( "collide" )
+		-- else
+		-- 	Globals.debugLabel:setText( "" )
+		-- end
 	end
 	self:addX( velocityX )
 	self:addY( velocityY )

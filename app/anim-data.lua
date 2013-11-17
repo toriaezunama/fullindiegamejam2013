@@ -1,4 +1,5 @@
 return {
+	-- 32x48px characters
 	zorro = {
 		{ name="idle-down", frames= {2} },
 		{ name="walk-down", frames= {1,3} },
@@ -79,5 +80,15 @@ return {
 		{ name="idle-right", frames= {73+34} },
 		{ name="walk-right", frames= {73+33,73+35} },
 	},
-
+	-- 32x32px characters 12 x 12 frames
+	goldKnight = {
+		{ name="idle-down", frames= {2} },
+		{ name="walk-down", frames= {1,3} },
+		{ name="idle-up", frames= {50} },
+		{ name="walk-up", frames= {49,51} },
+		{ name="idle-left", frames= {18} },
+		{ name="walk-left", frames= {17,19} },
+		{ name="idle-right", frames= {34} },
+		{ name="walk-right", frames= {33,35} },
+	},
 }

@@ -1,4 +1,6 @@
 local Utils 			= _G.Utils
+local Globals 			= _G.Globals
+local Entity 			= _G.Entity
 
 local tostring			= _G.tostring
 local require 			= _G.require
@@ -22,14 +24,18 @@ local class = Utils.class
 local G = {}
 setfenv( 1, G )
 
-new = class()
+new = class( 'CollisionLayer', Entity.new )
 new.__index = MOAIGrid.getInterfaceTable()
 new.__moai_class = MOAIGrid
 
 -- Utils.printClassInfo( new )
 
 function new:init( tw, th, tcx, tcy, tiledata, gidbase )
+	print( 'CollisionLayer:init' )
+
 	assert( tonumber( tcx ) and tonumber( tcy ) and tonumber( gidbase ) )
+	
+	new.__super.init(self)
 
 	-- print( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 
@@ -41,6 +47,9 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 		end
 	end
 
+	self.collisionType = 'col-wall'
+
+--[[
 	-- print( self:getCellAddr( 2, 2 ) ) -- tile x,y to y * w + x
 	print( "locToCellAddr", self:locToCellAddr( 1,2 ) ) --> 1
 
@@ -63,24 +72,83 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 16, 48
 
 	print( "getTile", self:getTile( -10, -10 ) ) --> 0 (seems to clip to 0 if out of range)
+]]
+
 end
 
 function new:collide( x, y, radius, velX, velY )
 	local tileX, tileY = self:locToCoord( x, y )
 
-	-- print("#", tileX, tileY )
-	for iy = tileY - 1, tileY + 1 do
-		for ix = tileX - 1, tileX + 1 do
-			if self:getTile( ix, iy ) ~= 0 then
-				local tx, ty = self:getTileLoc( ix, iy )
-				local dx = tx - x
-				local dy = ty - y
-				if dx*dx + dy*dy < radius*radius then
-					return true
+	local r, g, b = 19, 20, 21
+	local debugMapLayer = Globals.debugMapLayer
+	debugMapLayer:clearGrid()
+
+	-- local dist = math.sqrt( velX*velX + velY*velY)
+	-- local invDist = 1/dist
+
+	local dirX = 1
+	if velX < 0 then
+		dirX = -1
+	elseif velX > 0 then
+		dirX = 1
+	end
+
+	local dirY = 1
+	if velY < 0 then
+		dirY = -1
+	elseif velY > 0 then
+		dirY = 1
+	end
+
+	local rangeX = x + velX + radius*dirX
+	local rangeY = y + velY + radius*dirY
+
+	local dx, _ = self:locToCoord( rangeX, 1 )
+	local _, dy = self:locToCoord( 1, rangeY )
+	-- print( dx, dy, tileX, tileY )
+	-- print( dx, tileX )
+	-- print( tileX, rangeX, dirX, dx, dy, tileY, rangeX, rangeY, dirX, dirY )
+	for yy = tileY, dy, dirY do
+		for xx = tileX, dx, dirX do
+			-- print( yy, xx )
+			if tileX ~= xx or tileY ~= yy then 
+				if self:getTile( xx, yy ) ~= 0 then
+					debugMapLayer:setTile( xx, yy, r )
+				else
+					debugMapLayer:setTile( xx, yy, g )
 				end
 			end
 		end
 	end
+
+	-- 
+
+	-- for iy = tileY - 1, tileY + 1 do
+	-- 	for ix = tileX - 1, tileX + 1 do
+
+	-- 		-- skip the tile we are on
+	-- 		if ix ~= tileX or iy ~= tileY then 
+	-- 			if self:getTile( ix, iy ) ~= 0 then
+	-- 				debugMapLayer:setTile( ix, iy, r )
+	-- 			else
+	-- 				debugMapLayer:setTile( ix, iy, g )
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
+
+	-- print("#", tileX, tileY )
+	-- 			if self:getTile( ix, iy ) ~= 0 then
+	-- 				local tx, ty = self:getTileLoc( ix, iy )
+	-- 				local dx = tx - x
+	-- 				local dy = ty - y
+	-- 				if dx*dx + dy*dy < radius*radius then
+	-- 					return true
+	-- 				end
+	-- 			end 
+	-- 		end
+	-- 	end
+	-- end
 	return false
 end
 

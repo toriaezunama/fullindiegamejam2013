@@ -23,7 +23,7 @@ local class = Utils.class
 local L = {}
 setfenv( 1, L )
 
-new = class()
+new = class( 'MapLayer' )
 new.__index = MOAIProp.getInterfaceTable()
 new.__moai_class = MOAIProp
 
@@ -33,9 +33,11 @@ function new:init( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 	assert( Utils.isUserdata( tileDeck ) )
 	assert( tonumber( tw ) and tonumber( th ) and tonumber( tcx ) and tonumber( tcy ) and tonumber( gidbase ) )
 
+	print( 'MapLayer:init')
 	-- print( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 
 	local grid = MOAIGrid.new()
+	self.grid = grid
 	grid:setSize( tcx, tcy, tw, th )
 
 	for y = 1, tcy do
@@ -50,6 +52,14 @@ function new:init( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 	self:setGrid( grid )
 	self:setDeck( tileDeck )
 	
+end
+
+function new:clearGrid()
+	self.grid:fill( 0 )
+end
+
+function new:setTile( x, y, index )
+	self.grid:setTile( x, y, index )
 end
 
 return L

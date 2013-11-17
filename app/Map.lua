@@ -26,7 +26,7 @@ local class = Utils.class
 local M = {}
 setfenv( 1, M )
 
-new = class()
+new = class( 'Map' )
 new.__index = MOAIProp.getInterfaceTable()
 new.__moai_class = MOAIProp
 
@@ -41,7 +41,10 @@ local function _getFirstNonZeroTileIndex( data )
 end
 
 function new:init( path )
+	print( 'Map:init' )
+
 	assert( Utils.isString( path ) )
+
 	local mapData = require( path )	
 
 	self.TILE_CNT_X, self.TILE_CNT_Y = mapData.width, mapData.height
@@ -50,11 +53,14 @@ function new:init( path )
 	self.height = self.TILE_HEIGHT * self.TILE_CNT_Y
 	-- local TILE_HALF_WIDTH, TILE_HALF_HEIGHT = TILE_WIDTH * 0.5, TILE_HEIGHT * 0.5
 
+   self.objects = {}
+
 	local deckMap = {}
 	self.deckMap = deckMap
 	for i, tileSet in ipairs( mapData.tilesets ) do
 		local texture = MOAITexture.new()
-		local _, e = tileSet.image:find( "../../../../FullIndieJam2013/assets/" )
+		print( tileSet.image )
+		local _, e = tileSet.image:find( "../assets/" )
 		local path = tileSet.image:sub( e + 1 ) 
 		-- print( path )
 		texture:load( Globals.kASSETS .. path )
@@ -92,7 +98,10 @@ function new:init( path )
 				mapLayer:setVisible( layer.visible )
 		      -- layer.opacity = 1,
 		      -- layer.properties = {},
-				Globals.worldLayer:insertProp( mapLayer )
+
+				if layer.name == "debug" then
+					mapLayer:clearGrid()
+				end
 
 		      mapLayersMap[ layer.name ] = mapLayer
 			end
@@ -112,36 +121,35 @@ function new:processObjects( layer )
    -- opacity = 1,
    for i, obj in ipairs( layer.objects ) do
    	if obj.type == "spawn" then
-   		if obj.name == "player" then 
-   			local player = Player.get()
-				Globals.player = player
-				Globals.player:setLayer( Globals.worldLayer )
-
+			table.push( self.objects, {
+				type=obj.name,
+				x=obj.x,
+				y=obj.y
+			} )
 				-- shape = "ellipse",
-				player:setLoc( obj.x, obj.y )
 				-- width = 0,
 				-- height = 0,
 				-- rotation = 0,
 				-- visible = true,
 				-- properties = {}
-   		end
+   		
    	end
    end
 
-   objects = {
-     {
-       name = "player",
-       type = "spawn",
-       shape = "ellipse",
-       x = 160,
-       y = 128,
-       width = 0,
-       height = 0,
-       rotation = 0,
-       visible = true,
-       properties = {}
-     }
-   }
+   -- objects = {
+   --   {
+   --     name = "player",
+   --     type = "spawn",
+   --     shape = "ellipse",
+   --     x = 160,
+   --     y = 128,
+   --     width = 0,
+   --     height = 0,
+   --     rotation = 0,
+   --     visible = true,
+   --     properties = {}
+   --   }
+   -- }
 
 end
 
@@ -161,6 +169,10 @@ function new:_getDeckForGid( gid )
 		end
 	end
 	error( "No deck found for gid: " .. tostring( gid ) )
+end
+
+function new:getObjectList()
+	return self.objects
 end
 
 return M

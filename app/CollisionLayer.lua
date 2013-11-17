@@ -80,6 +80,7 @@ function new:collide( aMinX, aMinY, aMaxX, aMaxY )
 	-- local debugMapLayer = Globals.debugMapLayer
 	-- debugMapLayer:clearGrid()
 	-- print( aMinX, aMinY, aMaxX, aMaxY )
+
 	-- TL
 	local tx, ty = self:locToCoord( aMinX, aMinY )
 	if self:getTile( tx, ty ) ~= 0 then
@@ -92,13 +93,13 @@ function new:collide( aMinX, aMinY, aMaxX, aMaxY )
 		return true
 	end
 
-	-- BR
+	-- BL
 	tx, ty = self:locToCoord( aMinX, aMaxY )
 	if self:getTile( tx, ty ) ~= 0 then
 		return true
 	end
 
-	-- BL
+	-- BR
 	tx, ty = self:locToCoord( aMaxX, aMaxY )
 	if self:getTile( tx, ty ) ~= 0 then
 		return true

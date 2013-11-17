@@ -71,7 +71,7 @@ function new:init( path )
 		local tileDeck = MOAITileDeck2D.new()
 		tileDeck:setTexture( texture )
 		tileDeck:setSize( tileCntX, tileCntY )
-		-- tileDeck:setRect( -0.5, -0.5, 0.5, 0.5 )
+		tileDeck:setRect( -0.5, 0.5, 0.5, -0.5 )
 		-- tileDeck:setRect( )
 
 		tileDeck.name = tileSet.name

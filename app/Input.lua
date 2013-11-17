@@ -102,7 +102,7 @@ R3		= false
 HOME  = false
 BACK  = false
 START = false 
-NEUTRAL=false
+NEUTRAL=true
 
 --==== Buttons ====
 setJoystickCallback( "T", function( aState ) T = aState --[[print( "T", aState )]] end )
@@ -206,24 +206,28 @@ KEY_T = 84
 local function handleKey(key, down)
 	-- print( '>>>', key, down )
 
-	NEUTRAL = true
+	PREV_UP 		= UP
+	PREV_DOWN 	= DOWN
+	PREV_LEFT 	= LEFT
+	PREV_RIGHT	= RIGHT
+
 	if key == KEY_SPACE then
 		B = down
-		NEUTRAL = false
 	elseif key == KEY_UP then
 		UP 	= down
-		NEUTRAL = false
 	elseif key == KEY_DOWN then
 		DOWN 	= down
-		NEUTRAL = false
 	elseif key == KEY_LEFT then
 		LEFT 	= down
-		NEUTRAL = false
 	elseif key == KEY_RIGHT then
 		RIGHT	= down
-		NEUTRAL = false
 	end
 
+	if not LEFT and not RIGHT and not DOWN and not UP then
+		NEUTRAL = true
+	else
+		NEUTRAL = false
+	end
 	if userKeyboardCallback then
 		userKeyboardCallback( key, down )
 	end

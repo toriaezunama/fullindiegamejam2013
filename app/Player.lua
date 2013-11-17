@@ -7,6 +7,7 @@ local Character 		= _G.Character
 local AnimData 		= _G.AnimData
 
 local print 			= _G.print
+local math 				= _G.math
 
 local class = Utils.class
 
@@ -28,7 +29,7 @@ function Player:init()
 	self.prop:play( "idle-up", false )	
 
 	-- Place pivot near feet
-	self.prop:setPiv( 0, 20 )
+	-- self.prop:setPiv( 0, 20 )
 
 	self.collisionType = 'col-player'
 	self:setCollisionRect( -10, -2, 10, 24 )
@@ -42,7 +43,6 @@ function player:update( deltatime )
 	local distX = dist
 	local distY = dist
 	local cos45 = 0.70710678118
-	local x, y = self.prop:getLoc()
 
 	-- Diagonal
 	if (Input.UP or Input.DOWN) and (Input.LEFT or Input.RIGHT) then
@@ -50,39 +50,50 @@ function player:update( deltatime )
 		distY = distY * cos45
 	end
 	
-	local velocityX = 0
-	local velocityY = 0
+	local dirX, dirY = 0,0
 
 	if Input.UP then
-		velocityY = -distY
+		dirY = -1
 	elseif Input.DOWN then
-		velocityY = distY
+		dirY = 1
 	end
 	if Input.LEFT then
-		velocityX = -distX
+		dirX = -1
 	elseif Input.RIGHT then
-		velocityX = distX
+		dirX = 1
 	end
 
-	local c = self:collide( 'col-wall' )
+	local velocityX = dirX * distX
+	local velocityY = dirY * distY
 
-	-- Only test collision if we are moving
-	if velocityX ~= 0 or velocityY ~= 0 then
-		local radius = 40 -- radius of circle around character
-		-- if dist > radius then -- but if we are moving further then
-		-- 	radius = dist 
-		-- end
-		--local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
-		-- if collided then
-		-- 	Globals.debugLabel:setText( "collide" )
-		-- else
-		-- 	Globals.debugLabel:setText( "" )
-		-- end
+	local startX, startY = sprite:getLoc()
+	local step = 0.5
+	local endX = startX + velocityX	
+	local endY = startY + velocityY
+	-- print( startX, endX, endX - startX )
+
+	if dirX ~= 0 then
+		local stepX = step * dirX
+		for x = startX, endX, stepX do
+			self:setX( x )
+			self.prop:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
+			if self:collide( 'col-wall' ) then 
+				self:setX( x - stepX )
+				break
+			end
+		end	
 	end
-	self:addX( velocityX )
-	self:addY( velocityY )
-
-	-- Globals.collisionLayer
+	if dirY ~= 0 then
+		local stepY = step * dirY
+		for y = startY, endY, stepY do
+			self:setY( y )
+			self.prop:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
+			if self:collide( 'col-wall' ) then 
+				self:setY( y - stepY )
+				break
+			end
+		end	
+	end
 
 	-- print( "updating", deltatime )
 	if Input.UP then
@@ -101,7 +112,7 @@ function player:update( deltatime )
 			sprite:play( "walk-right", true )
 		end
 	end
-	if Input.NEUTRAL then
+	if Input.NEUTRAL == true then
 		if Input.PREV_UP then
 			sprite:play( "idle-up", false )	
 		elseif Input.PREV_DOWN then

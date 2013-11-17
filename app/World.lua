@@ -51,26 +51,27 @@ function new:collide( testEntity, aType )
 	assert( Utils.isTable( testEntity ) and Utils.isString( aType ) )
 	
 	local aMinX, aMinY, aMaxX, aMaxY = testEntity:getCollisionRectInWorldCoords()
+	-- print( aMinX, aMaxX )
 
 	for i, entity in ipairs( self.entityList ) do
 		-- Don't collide with ourself
 		if entity ~= testEntity then
 			if entity.collisionType == aType then
-				local collided
 				if aType == "col-wall" then
 					collided = entity:collide( aMinX, aMinY, aMaxX, aMaxY )
 				else
 					collided = _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, entity:getCollisionRectInWorldCoords() )
 				end
 				if collided then
-					Globals.debugLabel:setText( "collide" )
+					-- Globals.debugLabel:setText( "collide" )
+					return true, entity
 				else
-					Globals.debugLabel:setText( "" )
+					-- Globals.debugLabel:setText( "" )
 				end
 			end
 		end
 	end
-
+	return false
 end
 
 --==== INTERFACE (override in derived class) ====

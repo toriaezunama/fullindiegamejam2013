@@ -1,6 +1,7 @@
 local Utils 			= _G.Utils
 local Entity 			= _G.Entity
 local Globals  		= _G.Globals
+local Map 				= _G.Map
 
 local tostring			= _G.tostring
 local require 			= _G.require
@@ -41,8 +42,21 @@ end
 function new:update( deltatime )
 	local x, y = self:getLoc()
 	local px, py = Globals.player:getLoc()
-	-- print( x, y, px, py)
-	self:setLoc( px, py )
+	local mw, mh = Globals.map:getDims()
+	local maxX = mw-- - Globals.HALF_SCREEN_WIDTH
+	local maxY = mh-- - Globals.HALF_SCREEN_HEIGHT
+	-- print( mw, mh, maxX, maxY )
+	
+	if px < 0 or px > maxX then
+		self:setX( x )
+	else 
+		self:setX( px )
+	end
+	if py < 0 or py > maxY then 
+		self:setY( y )
+	else 
+		self:setY( py )
+	end
 end
 
 function new:getMOAICamera()

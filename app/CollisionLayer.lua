@@ -64,6 +64,4 @@ function new:init( tcx, tcy, tiledata, gidbase )
 	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 0.5, 1.5
 end
 
-
-
 return G

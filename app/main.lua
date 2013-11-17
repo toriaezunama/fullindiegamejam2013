@@ -1,10 +1,12 @@
 _G.kASSETS 	= "assets/"
 _G.kLEVELS 	= "levels/"
+_G.Globals  = require( "Globals")
+Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT = 640, 480
+Globals.HALF_SCREEN_WIDTH, Globals.HALF_SCREEN_HEIGHT = Globals.SCREEN_WIDTH * 0.5, Globals.SCREEN_HEIGHT * 0.5
 _G.AnimData = require( "anim-data" )
 
 			  	  require( "type-exts")  -- extends lua types
 _G.Utils 	= require( "Utils" )
-_G.Globals  = require( "Globals")
 _G.Input 	= require( "Input" )
 _G.Sprite 	= require( "Sprite" )
 _G.Entity   = require( "Entity" )
@@ -19,8 +21,6 @@ _G.Map      = require( "Map" )
 -- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_WORLD_BOUNDS, 1, 0, 0, 1, 1 )
 
 --==== Setup ====
-Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT = 640, 480
-Globals.HALF_SCREEN_WIDTH, Globals.HALF_SCREEN_HEIGHT = Globals.SCREEN_WIDTH * 0.5, Globals.SCREEN_HEIGHT * 0.5
 MOAISim.openWindow( "FullIndieJam2013", Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT )
 
 local viewport = MOAIViewport.new()
@@ -41,10 +41,12 @@ Globals.worldLayer = layer
 Utils.setBackgroundColor( 0, 0, 0 )
 
 --==== Map ====
-local map = Map.new( kLEVELS .. "level1" )
-local groundLayer = map:getMapLayerForName( "ground" )
+Globals.map = Map.new( kLEVELS .. "level1" )
+
+local groundLayer = Globals.map:getMapLayerForName( "ground" )
 Globals.worldLayer:insertProp( groundLayer )
-local wallLayer = map:getMapLayerForName( "walls" )
+
+local wallLayer = Globals.map:getMapLayerForName( "walls" )
 Globals.worldLayer:insertProp( wallLayer )
 
 --==== Player ====

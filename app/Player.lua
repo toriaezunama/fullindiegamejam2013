@@ -32,7 +32,7 @@ end
 local player = Player()
 function player:update( deltatime )
 	local sprite = self.prop
-	local dist = 50 * deltatime
+	local dist = 100 * deltatime
 
 	-- print( "updating", deltatime )
 	if Input.UP then

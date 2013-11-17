@@ -43,8 +43,10 @@ function new:init( path )
 	assert( Utils.isString( path ) )
 	local mapData = require( path )	
 
-	local TILE_CNT_X, TILE_CNT_Y = mapData.width, mapData.height
-	local TILE_WIDTH, TILE_HEIGHT = mapData.tilewidth, mapData.tileheight
+	self.TILE_CNT_X, self.TILE_CNT_Y = mapData.width, mapData.height
+	self.TILE_WIDTH, self.TILE_HEIGHT = mapData.tilewidth, mapData.tileheight
+	self.width = self.TILE_WIDTH * self.TILE_CNT_X
+	self.height = self.TILE_HEIGHT * self.TILE_CNT_Y
 	-- local TILE_HALF_WIDTH, TILE_HALF_HEIGHT = TILE_WIDTH * 0.5, TILE_HEIGHT * 0.5
 
 	local deckMap = {}
@@ -83,7 +85,7 @@ function new:init( path )
 				self.collisionLayer = CollisionLayer.new( layer.width, layer.height, layer.data, deck.firstgid )
 			else
 				-- print( tileSetName, deck )
-				local mapLayer = MapLayer.new( deck, TILE_WIDTH, TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
+				local mapLayer = MapLayer.new( deck, self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
 				mapLayer:setLoc( layer.x, layer.y )
 				mapLayer:setVisible( layer.visible )
 		      -- layer.opacity = 1,
@@ -98,6 +100,10 @@ function new:init( path )
 
 	Utils.printr( mapLayersMap )
 	-- TODO: Unload module
+end
+
+function new:getDims()
+	return self.width, self.height
 end
 
 function new:getMapLayerForName( name )

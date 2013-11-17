@@ -1,4 +1,3 @@
-local kASSETS 			= _G.kASSETS
 local Utils 			= _G.Utils
 local Input 			= _G.Input
 local Sprite 			= _G.Sprite

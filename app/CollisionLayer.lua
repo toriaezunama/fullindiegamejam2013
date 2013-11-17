@@ -68,11 +68,18 @@ end
 function new:collide( x, y, radius, velX, velY )
 	local tileX, tileY = self:locToCoord( x, y )
 
-	for y = tileY - 1, tileY + 1 do
-		for x = tileX - 1, tileX + 1 do
-			-- print( self:getTile( x, y ) )
+	-- print("#", tileX, tileY )
+	for iy = tileY - 1, tileY + 1 do
+		for ix = tileX - 1, tileX + 1 do
+			if self:getTile( ix, iy ) ~= 0 then
+				local tx, ty = self:getTileLoc( ix, iy )
+				local dx = tx - x
+				local dy = ty - y
+				if dx*dx + dy*dy < radius*radius then
+					return true
+				end
+			end
 		end
-		return true
 	end
 	return false
 end

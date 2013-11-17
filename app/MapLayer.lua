@@ -1,4 +1,3 @@
-local kASSETS 			= _G.kASSETS
 local Utils 			= _G.Utils
 
 local tostring			= _G.tostring

@@ -1,4 +1,3 @@
-local kASSETS 			= _G.kASSETS
 local Utils 			= _G.Utils
 local MapLayer 		= _G.MapLayer
 local CollisionLayer = _G.CollisionLayer
@@ -58,7 +57,7 @@ function new:init( path )
 		local _, e = tileSet.image:find( "../../../../FullIndieJam2013/assets/" )
 		local path = tileSet.image:sub( e + 1 ) 
 		-- print( path )
-		texture:load( kASSETS .. path )
+		texture:load( Globals.kASSETS .. path )
 
       local tileCntX = tileSet.imagewidth / tileSet.tilewidth
       local tileCntY = tileSet.imageheight / tileSet.tileheight

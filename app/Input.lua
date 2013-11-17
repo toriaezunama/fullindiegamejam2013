@@ -201,6 +201,7 @@ KEY_LEFT = 285
 KEY_RIGHT = 286
 KEY_SPACE = 32
 KEY_TAB = 293
+KEY_T = 84
 
 local function handleKey(key, down)
 	-- print( '>>>', key, down )

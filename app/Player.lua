@@ -1,4 +1,3 @@
-local kASSETS 			= _G.kASSETS
 local Globals 			= _G.Globals
 local Utils 			= _G.Utils
 local Input 			= _G.Input
@@ -24,7 +23,7 @@ function Player:init()
 	Player.__super.init(self)
 
 	-- 16 x 16 sprites
-	self:setUpSprite( kASSETS .. "characters-32x48.png" , 32, 48, AnimData.punk, 'Player'  )	
+	self:setUpSprite( Globals.kASSETS .. "characters-32x48.png" , 32, 48, AnimData.punk, 'Player'  )	
 	
 	self.prop:play( "idle-up", false )	
 end
@@ -58,6 +57,11 @@ function player:update( deltatime )
 	end
 
 	local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
+	if collided then
+		Globals.debugLabel:setText( "collide" )
+	else
+		Globals.debugLabel:setText( "" )
+	end
 	self:addX( velocityX )
 	self:addY( velocityY )
 

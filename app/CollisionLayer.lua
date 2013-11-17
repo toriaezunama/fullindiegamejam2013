@@ -76,79 +76,34 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 
 end
 
-function new:collide( x, y, radius, velX, velY )
-	local tileX, tileY = self:locToCoord( x, y )
-
-	local r, g, b = 19, 20, 21
-	local debugMapLayer = Globals.debugMapLayer
-	debugMapLayer:clearGrid()
-
-	-- local dist = math.sqrt( velX*velX + velY*velY)
-	-- local invDist = 1/dist
-
-	local dirX = 1
-	if velX < 0 then
-		dirX = -1
-	elseif velX > 0 then
-		dirX = 1
+function new:collide( aMinX, aMinY, aMaxX, aMaxY )
+	-- local debugMapLayer = Globals.debugMapLayer
+	-- debugMapLayer:clearGrid()
+	-- print( aMinX, aMinY, aMaxX, aMaxY )
+	-- TL
+	local tx, ty = self:locToCoord( aMinX, aMinY )
+	if self:getTile( tx, ty ) ~= 0 then
+		return true
 	end
 
-	local dirY = 1
-	if velY < 0 then
-		dirY = -1
-	elseif velY > 0 then
-		dirY = 1
+	-- TR
+	tx, ty = self:locToCoord( aMaxX, aMinY )
+	if self:getTile( tx, ty ) ~= 0 then
+		return true
 	end
 
-	local rangeX = x + velX + radius*dirX
-	local rangeY = y + velY + radius*dirY
-
-	local dx, _ = self:locToCoord( rangeX, 1 )
-	local _, dy = self:locToCoord( 1, rangeY )
-	-- print( dx, dy, tileX, tileY )
-	-- print( dx, tileX )
-	-- print( tileX, rangeX, dirX, dx, dy, tileY, rangeX, rangeY, dirX, dirY )
-	for yy = tileY, dy, dirY do
-		for xx = tileX, dx, dirX do
-			-- print( yy, xx )
-			if tileX ~= xx or tileY ~= yy then 
-				if self:getTile( xx, yy ) ~= 0 then
-					debugMapLayer:setTile( xx, yy, r )
-				else
-					debugMapLayer:setTile( xx, yy, g )
-				end
-			end
-		end
+	-- BR
+	tx, ty = self:locToCoord( aMinX, aMaxY )
+	if self:getTile( tx, ty ) ~= 0 then
+		return true
 	end
 
-	-- 
+	-- BL
+	tx, ty = self:locToCoord( aMaxX, aMaxY )
+	if self:getTile( tx, ty ) ~= 0 then
+		return true
+	end
 
-	-- for iy = tileY - 1, tileY + 1 do
-	-- 	for ix = tileX - 1, tileX + 1 do
-
-	-- 		-- skip the tile we are on
-	-- 		if ix ~= tileX or iy ~= tileY then 
-	-- 			if self:getTile( ix, iy ) ~= 0 then
-	-- 				debugMapLayer:setTile( ix, iy, r )
-	-- 			else
-	-- 				debugMapLayer:setTile( ix, iy, g )
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
-
-	-- print("#", tileX, tileY )
-	-- 			if self:getTile( ix, iy ) ~= 0 then
-	-- 				local tx, ty = self:getTileLoc( ix, iy )
-	-- 				local dx = tx - x
-	-- 				local dy = ty - y
-	-- 				if dx*dx + dy*dy < radius*radius then
-	-- 					return true
-	-- 				end
-	-- 			end 
-	-- 		end
-	-- 	end
-	-- end
 	return false
 end
 

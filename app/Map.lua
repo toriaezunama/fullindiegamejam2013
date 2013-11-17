@@ -90,7 +90,6 @@ function new:init( path )
 			local tileSetName, deck = self:_getDeckForGid( _getFirstNonZeroTileIndex( layer.data ) )
 			if layer.name == "collision" then
 				self.collisionLayer = CollisionLayer.new( self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
-				Globals.collisionLayer = self.collisionLayer
 			else
 				-- print( tileSetName, deck )
 				local mapLayer = MapLayer.new( deck, self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
@@ -169,6 +168,10 @@ function new:_getDeckForGid( gid )
 		end
 	end
 	error( "No deck found for gid: " .. tostring( gid ) )
+end
+
+function new:getCollisionLayer()
+	return self.collisionLayer
 end
 
 function new:getObjectList()

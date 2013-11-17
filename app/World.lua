@@ -53,12 +53,15 @@ function new:collide( testEntity, aType )
 	local aMinX, aMinY, aMaxX, aMaxY = testEntity:getCollisionRectInWorldCoords()
 
 	for i, entity in ipairs( self.entityList ) do
-		-- print( entity.collisionType, type )
-
 		-- Don't collide with ourself
 		if entity ~= testEntity then
 			if entity.collisionType == aType then
-				local collided = _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, entity:getCollisionRectInWorldCoords() )
+				local collided
+				if aType == "col-wall" then
+					collided = entity:collide( aMinX, aMinY, aMaxX, aMaxY )
+				else
+					collided = _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, entity:getCollisionRectInWorldCoords() )
+				end
 				if collided then
 					Globals.debugLabel:setText( "collide" )
 				else

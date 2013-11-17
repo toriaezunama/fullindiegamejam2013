@@ -64,7 +64,7 @@ function player:update( deltatime )
 		velocityX = distX
 	end
 
-	local c = self:collide( 'col-enemy' )
+	local c = self:collide( 'col-wall' )
 
 	-- Only test collision if we are moving
 	if velocityX ~= 0 or velocityY ~= 0 then

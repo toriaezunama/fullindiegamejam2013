@@ -34,6 +34,8 @@ function new:start()
 	local map = Map.new( Globals.kLEVELS .. "level1" )
 	
 	--==== Map layers ====
+	self:add( map:getCollisionLayer() )
+
 	local groundLayer = map:getMapLayerForName( "ground" )
 	local wallLayer = map:getMapLayerForName( "walls" )
 	local debugLayer = map:getMapLayerForName( "debug" )
@@ -44,7 +46,7 @@ function new:start()
 
 	local objectList = map:getObjectList()
 	for i, obj in ipairs( objectList ) do
-			print( obj.type )
+			-- print( obj.type )
 		if obj.type == 'player' then
 			Globals.player:setLoc( obj.x, obj.x )
 			self:add( Globals.player )
@@ -54,6 +56,7 @@ function new:start()
 			self:add( gk )
 		end
 	end
+
 
 	self.map = map
 	self.groundLayer = groundLayer

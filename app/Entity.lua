@@ -60,30 +60,6 @@ function new:setParent(parent)
 	self:setAttrLink(MOAITransform.INHERIT_TRANSFORM, parent, MOAITransform.TRANSFORM_TRAIT)
 end
 
--- params are LOCAL space
-function new:setCollisionRect( xMin, yMin, xMax, yMax )
-	xMin = math.min( xMin, xMax )
-	xMax = math.max( xMin, xMax )
-
-	yMin = math.min( yMin, yMax )
-	yMax = math.max( yMin, yMax )
-
-	if self.prop then
-		self.prop:setBounds( xMin, yMin, 0, xMax, yMax, 0 )
-	end
-end
-
-function new:getCollisionRectInWorldCoords()
-	local prop = self.prop
-	local xMin, yMin, xMax, yMax = 0,0,0,0
-	if prop then
-		xMin, yMin, _, xMax, yMax, _ = prop:getBounds()
-		xMin, yMin, _ = prop:modelToWorld( xMin, yMin, 0 )
-		xMax, yMax, _ = prop:modelToWorld( xMax, yMax, 0 )
-	end
-	return xMin, yMin, xMax, yMax
-end
-
 -- Borrowed from 'flower's function DisplayObject:setLayer(layer)
 function new:setLayer( layer )
 	local myLayer = self.layer
@@ -164,8 +140,35 @@ function new:addY( y )
 	self:setY( self:getY() + y )
 end
 
+--==== Collision ====
+
 function new:collide( type )
 	return Globals.world:collide( self, type )
 end
+
+-- params are LOCAL space
+function new:setCollisionRect( xMin, yMin, xMax, yMax )
+	xMin = math.min( xMin, xMax )
+	xMax = math.max( xMin, xMax )
+
+	yMin = math.min( yMin, yMax )
+	yMax = math.max( yMin, yMax )
+
+	if self.prop then
+		self.prop:setBounds( xMin, yMin, 0, xMax, yMax, 0 )
+	end
+end
+
+function new:getCollisionRectInWorldCoords()
+	local prop = self.prop
+	local xMin, yMin, xMax, yMax = 0,0,0,0
+	if prop then
+		xMin, yMin, _, xMax, yMax, _ = prop:getBounds()
+		xMin, yMin, _ = prop:modelToWorld( xMin, yMin, 0 )
+		xMax, yMax, _ = prop:modelToWorld( xMax, yMax, 0 )
+	end
+	return xMin, yMin, xMax, yMax
+end
+
 
 return E

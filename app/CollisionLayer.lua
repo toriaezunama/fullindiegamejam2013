@@ -28,7 +28,7 @@ new.__moai_class = MOAIGrid
 
 -- Utils.printClassInfo( new )
 
-function new:init( tcx, tcy, tiledata, gidbase )
+function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 	assert( tonumber( tcx ) and tonumber( tcy ) and tonumber( gidbase ) )
 
 	-- print( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
@@ -42,26 +42,35 @@ function new:init( tcx, tcy, tiledata, gidbase )
 	end
 
 	-- print( self:getCellAddr( 2, 2 ) ) -- tile x,y to y * w + x
-	print( "locToCellAddr", self:locToCellAddr( 1,2 ) ) --> 102: 50 * 2 + 1
+	print( "locToCellAddr", self:locToCellAddr( 1,2 ) ) --> 1
 
 	-- Transforms a coordinate in grid space into a tile index
-	print( "locToCoord", self:locToCoord( 1, 1) ) --> 2, 2  (+1,+1)
-	print( "locToCoord", self:locToCoord( 2, 3 ) ) --> 3, 4 (+1,+1)
+	print( "locToCoord", self:locToCoord( 1, 1) ) --> 1, 1
+	print( "locToCoord", self:locToCoord( 40, 34 ) ) --> 2, 2
 
-	-- 1, 1
-	print( "getTileSize", self:getTileSize() )
+	print( "getTileSize", self:getTileSize() ) --> 32, 32 
 
-	-- Should be 0,0 
-	print( "getOffset", self:getOffset() )
+	print( "getOffset", self:getOffset() ) --> 0, 0 
 	
 	-- width and height in tiles of map
 	print( "getSize", self:getSize() ) --> 50, 50
 
 	-- grid space coordinate of the tile
 	-- The optional 'position' flag determines the location of the coordinate within the tile.
+	print( "getTileLoc", self:getTileLoc( -1, -1, MOAIGridSpace.TILE_LEFT_TOP ) ) --> -64, -64
 	print( "getTileLoc", self:getTileLoc( 1, 1, MOAIGridSpace.TILE_LEFT_TOP ) ) --> 0, 0
-	print( "getTileLoc", self:getTileLoc( 1, 1, MOAIGridSpace.TILE_CENTER ) ) --> 0.5, 0.5
-	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 0.5, 1.5
+	print( "getTileLoc", self:getTileLoc( 1, 1, MOAIGridSpace.TILE_CENTER ) ) --> 16, 16
+	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 16, 48
+end
+
+function new:collide( x, y, radius, velX, velY )
+	local tileX, tileY = self:locToCoord( x, y )
+	
+	if self:getTile( tileX, tileY ) ~= 0 then
+
+		return true
+	end
+	return false
 end
 
 return G

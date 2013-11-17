@@ -193,6 +193,55 @@ end )
 -- 	end
 -- end )	
 
+local userKeyboardCallback
 
+KEY_UP = 283
+KEY_DOWN = 284
+KEY_LEFT = 285
+KEY_RIGHT = 286
+KEY_SPACE = 32
+KEY_TAB = 293
+
+local function handleKey(key, down)
+	-- print( '>>>', key, down )
+
+	NEUTRAL = true
+	if key == KEY_SPACE then
+		B = down
+		NEUTRAL = false
+	elseif key == KEY_UP then
+		UP 	= down
+		NEUTRAL = false
+	elseif key == KEY_DOWN then
+		DOWN 	= down
+		NEUTRAL = false
+	elseif key == KEY_LEFT then
+		LEFT 	= down
+		NEUTRAL = false
+	elseif key == KEY_RIGHT then
+		RIGHT	= down
+		NEUTRAL = false
+	end
+
+	if userKeyboardCallback then
+		userKeyboardCallback( key, down )
+	end
+end
+
+local keyboardSensor = MOAIInputMgr.device.keyboard
+if keyboardSensor then
+	keyboardSensor:setCallback( handleKey )
+end
+
+-- callback: function( key, isDown ) ... end
+function setKeyboardCallback( callback )
+	userKeyboardCallback = callback
+end
+
+function keyIsDown(key)
+	if keyboardSensor then
+		return keyboardSensor:keyIsDown(key)
+	end
+end
 
 return I

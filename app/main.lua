@@ -17,9 +17,6 @@ _G.MapLayer = require( "MapLayer" )
 _G.CollisionLayer = require( "CollisionLayer" )
 _G.Map      = require( "Map" )
 
--- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )
--- MOAIDebugLines.setStyle ( MOAIDebugLines.PROP_WORLD_BOUNDS, 1, 0, 0, 1, 1 )
-
 --==== Setup ====
 MOAISim.openWindow( "FullIndieJam2013", Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT )
 
@@ -49,9 +46,40 @@ Globals.worldLayer:insertProp( groundLayer )
 local wallLayer = Globals.map:getMapLayerForName( "walls" )
 Globals.worldLayer:insertProp( wallLayer )
 
+-- Collision
+Globals.collisionLayer = Globals.map.collisionLayer
+
 --==== Player ====
 Globals.player = Player.get()
 Globals.player:setLayer( layer )
 
 -- player.prop:moveLoc( 500, 500, 0, 5 )
 -- camera:setParent( player.prop )
+
+--==== Debug ====
+local debugToggle = false
+
+MOAIDebugLines.setStyle( MOAIDebugLines.PROP_MODEL_BOUNDS, 1, 0, 1, 0, 1 )
+MOAIDebugLines.setStyle( MOAIDebugLines.PROP_WORLD_BOUNDS, 1, 0, 0, 1, 1 )
+MOAIDebugLines.setStyle( MOAIDebugLines.PARTITION_CELLS, 1, 1, 1, 0, 1 )
+MOAIDebugLines.setStyle( MOAIDebugLines.PARTITION_PADDED_CELLS, 1, 1, 0, 1, 1 )
+-- MOAIDebugLines.TEXT_BOX
+-- MOAIDebugLines.TEXT_BOX_BASELINES
+-- MOAIDebugLines.TEXT_BOX_LAYOUT
+
+local function showDebugLines( show )
+	MOAIDebugLines.showStyle( MOAIDebugLines.PROP_MODEL_BOUNDS, show )
+	MOAIDebugLines.showStyle( MOAIDebugLines.PROP_WORLD_BOUNDS, show )
+	MOAIDebugLines.showStyle( MOAIDebugLines.PARTITION_CELLS, show )
+	MOAIDebugLines.showStyle( MOAIDebugLines.PARTITION_PADDED_CELLS, show )
+end
+
+-- Hide to start with
+showDebugLines( false )
+
+Input.setKeyboardCallback( function( key, down )
+	if Input.KEY_TAB == key and down then
+		debugToggle = not debugToggle 
+		showDebugLines( debugToggle )
+	end 
+end )

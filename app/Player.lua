@@ -1,4 +1,5 @@
 local kASSETS 			= _G.kASSETS
+local Globals 			= _G.Globals
 local Utils 			= _G.Utils
 local Input 			= _G.Input
 local Sprite 			= _G.Sprite
@@ -32,38 +33,62 @@ end
 local player = Player()
 function player:update( deltatime )
 	local sprite = self.prop
-	local dist = 100 * deltatime
+	local distX = 100 * deltatime
+	local distY = distX
+	local cos45 = 0.70710678118
+	local x, y = self.prop:getLoc()
+
+	-- Diagonal
+	if (Input.UP or Input.DOWN) and (Input.LEFT or Input.RIGHT) then
+		distX = distX * cos45
+		distY = distY * cos45
+	end
+	local velocityX = 0
+	local velocityY = 0
+
+	if Input.UP then
+		velocityY = -distY
+	elseif Input.DOWN then
+		velocityY = distY
+	end
+	if Input.LEFT then
+		velocityX = -distX
+	elseif Input.RIGHT then
+		velocityX = distX
+	end
+
+	local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
+	self:addX( velocityX )
+	self:addY( velocityY )
+
+	-- Globals.collisionLayer
 
 	-- print( "updating", deltatime )
 	if Input.UP then
-		self:addY( -dist )
 		sprite:play( "walk-up", true )
 	elseif Input.DOWN then
-		self:addY( dist )
 		if not (Input.LEFT or Input.RIGHT ) then
 			sprite:play( "walk-down", true )
 		end
 	end
 	if Input.LEFT then
-		self:addX( -dist )
 		if not Input.UP then
 			sprite:play( "walk-left", true )
 		end
 	elseif Input.RIGHT then
-		self:addX( dist )
 		if not Input.UP then
 			sprite:play( "walk-right", true )
 		end
 	end
 	if Input.NEUTRAL then
 		if Input.PREV_UP then
-			sprite:play( "idle-up", true )	
+			sprite:play( "idle-up", false )	
 		elseif Input.PREV_DOWN then
-			sprite:play( "idle-down", true )	
+			sprite:play( "idle-down", false )	
 		elseif Input.PREV_LEFT then
-			sprite:play( "idle-left", true )	
+			sprite:play( "idle-left", false )	
 		elseif Input.PREV_RIGHT then
-			sprite:play( "idle-right", true )	
+			sprite:play( "idle-right", false )	
 		end
 	end
 

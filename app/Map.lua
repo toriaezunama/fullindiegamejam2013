@@ -82,7 +82,7 @@ function new:init( path )
 		if layer.type == "tilelayer" then
 			local tileSetName, deck = self:_getDeckForGid( _getFirstNonZeroTileIndex( layer.data ) )
 			if layer.name == "collision" then
-				self.collisionLayer = CollisionLayer.new( layer.width, layer.height, layer.data, deck.firstgid )
+				self.collisionLayer = CollisionLayer.new( self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
 			else
 				-- print( tileSetName, deck )
 				local mapLayer = MapLayer.new( deck, self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )

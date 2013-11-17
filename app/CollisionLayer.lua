@@ -61,13 +61,17 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 	print( "getTileLoc", self:getTileLoc( 1, 1, MOAIGridSpace.TILE_LEFT_TOP ) ) --> 0, 0
 	print( "getTileLoc", self:getTileLoc( 1, 1, MOAIGridSpace.TILE_CENTER ) ) --> 16, 16
 	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 16, 48
+
+	print( "getTile", self:getTile( -10, -10 ) ) --> 0 (seems to clip to 0 if out of range)
 end
 
 function new:collide( x, y, radius, velX, velY )
 	local tileX, tileY = self:locToCoord( x, y )
-	
-	if self:getTile( tileX, tileY ) ~= 0 then
 
+	for y = tileY - 1, tileY + 1 do
+		for x = tileX - 1, tileX + 1 do
+			-- print( self:getTile( x, y ) )
+		end
 		return true
 	end
 	return false

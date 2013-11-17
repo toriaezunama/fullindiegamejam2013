@@ -2,6 +2,8 @@ local kASSETS 			= _G.kASSETS
 local Utils 			= _G.Utils
 local MapLayer 		= _G.MapLayer
 local CollisionLayer = _G.CollisionLayer
+local Player 			= _G.Player
+local Globals 			= _G.Globals
 
 local tostring			= _G.tostring
 local require 			= _G.require
@@ -83,6 +85,7 @@ function new:init( path )
 			local tileSetName, deck = self:_getDeckForGid( _getFirstNonZeroTileIndex( layer.data ) )
 			if layer.name == "collision" then
 				self.collisionLayer = CollisionLayer.new( self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
+				Globals.collisionLayer = self.collisionLayer
 			else
 				-- print( tileSetName, deck )
 				local mapLayer = MapLayer.new( deck, self.TILE_WIDTH, self.TILE_HEIGHT, layer.width, layer.height, layer.data, deck.firstgid )
@@ -90,16 +93,57 @@ function new:init( path )
 				mapLayer:setVisible( layer.visible )
 		      -- layer.opacity = 1,
 		      -- layer.properties = {},
+				Globals.worldLayer:insertProp( mapLayer )
 
 		      mapLayersMap[ layer.name ] = mapLayer
 			end
-			-- TODO: collision layer - grid only!
+		elseif layer.type == "objectgroup" then
+			self:processObjects( layer )
 		end
   
 	end
 
 	Utils.printr( mapLayersMap )
 	-- TODO: Unload module
+end
+
+function new:processObjects( layer )
+   -- name = "objects",
+   -- visible = true,
+   -- opacity = 1,
+   for i, obj in ipairs( layer.objects ) do
+   	if obj.type == "spawn" then
+   		if obj.name == "player" then 
+   			local player = Player.get()
+				Globals.player = player
+				Globals.player:setLayer( Globals.worldLayer )
+
+				-- shape = "ellipse",
+				player:setLoc( obj.x, obj.y )
+				-- width = 0,
+				-- height = 0,
+				-- rotation = 0,
+				-- visible = true,
+				-- properties = {}
+   		end
+   	end
+   end
+
+   objects = {
+     {
+       name = "player",
+       type = "spawn",
+       shape = "ellipse",
+       x = 160,
+       y = 128,
+       width = 0,
+       height = 0,
+       rotation = 0,
+       visible = true,
+       properties = {}
+     }
+   }
+
 end
 
 function new:getDims()

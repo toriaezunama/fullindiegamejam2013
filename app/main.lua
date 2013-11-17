@@ -40,19 +40,6 @@ Utils.setBackgroundColor( 0, 0, 0 )
 --==== Map ====
 Globals.map = Map.new( kLEVELS .. "level1" )
 
-local groundLayer = Globals.map:getMapLayerForName( "ground" )
-Globals.worldLayer:insertProp( groundLayer )
-
-local wallLayer = Globals.map:getMapLayerForName( "walls" )
-Globals.worldLayer:insertProp( wallLayer )
-
--- Collision
-Globals.collisionLayer = Globals.map.collisionLayer
-
---==== Player ====
-Globals.player = Player.get()
-Globals.player:setLayer( layer )
-
 -- player.prop:moveLoc( 500, 500, 0, 5 )
 -- camera:setParent( player.prop )
 

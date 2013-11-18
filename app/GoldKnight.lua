@@ -33,8 +33,7 @@ function new:init()
 
 	-- 16 x 16 sprites
 	self:setUpSprite( Globals.kASSETS .. "chars-32x32.png" , 32, 32, AnimData.goldKnight, 'GoldKnight'  )	
-	
-	self.prop:play( "idle-down", false )	
+	self:faceDown()
 
 	self.collisionType = 'col-enemy'
 	self:setCollisionRect( -10, -10, 10, 10 )
@@ -44,7 +43,6 @@ end
 
 function new:update( deltatime )
 	local state = self.state
-	local sprite = self.prop
 
 	if state == STATE_CHASE then
 		local collisionLayer = Globals.collisionLayer
@@ -60,7 +58,7 @@ function new:update( deltatime )
 
 		while pathFinder:findPath( 3 ) do
 			-- print( 'finding...' )
-			
+
 			-- 1) Calculate over several frames
 			coroutine:yield()
 		end
@@ -78,18 +76,18 @@ function new:update( deltatime )
 
 			-- Play relevent animation
 			if pty < ty then
-				sprite:play( "walk-down", true )
+				self:walkDown()
 			elseif pty > ty then
-				sprite:play( "walk-up", true )
+				self:walkUp()
 			end
 			if ptx < tx then
-				sprite:play( "walk-right", true )
+				self:walkRight()
 			elseif ptx > tx then
-				sprite:play( "walk-left", true )
+				self:walkLeft()
 			end
 	
 			-- 2) Wait to arrive
-			MOAIThread.blockOnAction( self:moveLoc( nx - x, ny - y, 0.4 ) ) 
+			MOAIThread.blockOnAction( self:_moveLoc( nx - x, ny - y, 0.4 ) ) 
 
 			if pty < ty then
 				self:faceDown()

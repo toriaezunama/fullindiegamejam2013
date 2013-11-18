@@ -48,20 +48,20 @@ local function _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, bMinX, bMinY, bMaxX,
 end
 
 function new:collide( testEntity, aType )
-	assert( Utils.isTable( testEntity ) and Utils.isString( aType ) )
+	assert( Utils.isUserdata( testEntity ) and Utils.isString( aType ) )
 	
 	local aMinX, aMinY, aMaxX, aMaxY = testEntity:getCollisionRectInWorldCoords()
 	-- print( aMinX, aMaxX )
+
+	if aType == "col-wall" then
+		return Globals.collisionLayer:collide( aMinX, aMinY, aMaxX, aMaxY )
+	end
 
 	for i, entity in ipairs( self.entityList ) do
 		-- Don't collide with ourself
 		if entity ~= testEntity then
 			if entity.collisionType == aType then
-				if aType == "col-wall" then
-					collided = entity:collide( aMinX, aMinY, aMaxX, aMaxY )
-				else
-					collided = _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, entity:getCollisionRectInWorldCoords() )
-				end
+				collided = _rectsIntersect( aMinX, aMinY, aMaxX, aMaxY, entity:getCollisionRectInWorldCoords() )
 				if collided then
 					-- Globals.debugLabel:setText( "collide" )
 					return true, entity

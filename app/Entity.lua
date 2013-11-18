@@ -24,6 +24,9 @@ local E = {}
 setfenv( 1, E )
 
 new = class( 'Entity' )
+new.__index = MOAIProp.getInterfaceTable()
+new.__moai_class = MOAIProp
+
 -- Utils.printClassInfo( new )
 
 function new:init()
@@ -64,83 +67,45 @@ end
 -- Borrowed from 'flower's function DisplayObject:setLayer(layer)
 function new:setLayer( layer )
 	local myLayer = self.layer
-	local myProp = self.prop
-
-	if not myProp then
-		return
-	end
 
 	if myLayer == layer then
-		return myProp
+		return self
 	end
 
     if myLayer then
-        myLayer:removeProp( myProp )
+        myLayer:removeProp( self )
     end
 
     self.layer = layer
 
     if layer then
-        layer:insertProp( myProp )
+        layer:insertProp( self )
     end
    
     return self -- chaining    
 end
 
-function new:moveLoc( x, y, time, easing )
-	local prop = self.prop
-	if prop then
-		easing = easing or MOAIEaseType.LINEAR
-		local driver = prop:moveLoc( x, y, 0, time, easing )
-		-- print( ">>", driver )
-		return driver
-	end
-end
-
-function new:setLoc( x, y )
-	local prop = self.prop
-	if prop then
-		prop:setLoc( x, y )
-	end
-end
-
-function new:getLoc()
-	local prop = self.prop
-	if prop then
-		return prop:getLoc()
-	end
+function new:_moveLoc( x, y, time, easing )
+	easing = easing or MOAIEaseType.LINEAR
+	local driver = self:moveLoc( x, y, 0, time, easing )
+	-- print( ">>", driver )
+	return driver
 end
 
 function new:setX( x )
-	local prop = self.prop
-	if prop then
-    	prop:setAttr( MOAITransform.ATTR_X_LOC, x )
-   end
-   return self -- chaining
+   self:setAttr( MOAITransform.ATTR_X_LOC, x )
 end
 
 function new:setY( y )
-	local prop = self.prop
-	if prop then
-		prop:setAttr( MOAITransform.ATTR_Y_LOC, y )
-	end
-   return self -- chaining
+	self:setAttr( MOAITransform.ATTR_Y_LOC, y )
 end
 
 function new:getX()
-	local prop = self.prop
-	if prop then
-    	return prop:getAttr( MOAITransform.ATTR_X_LOC )
-   end
-   return 0
+   return self:getAttr( MOAITransform.ATTR_X_LOC )
 end
 
 function new:getY()
-	local prop = self.prop
-	if prop then
-		return prop:getAttr( MOAITransform.ATTR_Y_LOC )
-	end
-	return 0
+	return self:getAttr( MOAITransform.ATTR_Y_LOC )
 end
 
 function new:addX( x )
@@ -165,21 +130,14 @@ function new:setCollisionRect( xMin, yMin, xMax, yMax )
 	yMin = math.min( yMin, yMax )
 	yMax = math.max( yMin, yMax )
 
-	if self.prop then
-		self.prop:setBounds( xMin, yMin, 0, xMax, yMax, 0 )
-	end
+	self:setBounds( xMin, yMin, 0, xMax, yMax, 0 )
 end
 
 function new:getCollisionRectInWorldCoords()
-	local prop = self.prop
-	local xMin, yMin, xMax, yMax = 0,0,0,0
-	if prop then
-		xMin, yMin, _, xMax, yMax, _ = prop:getBounds()
-		xMin, yMin, _ = prop:modelToWorld( xMin, yMin, 0 )
-		xMax, yMax, _ = prop:modelToWorld( xMax, yMax, 0 )
-	end
+	local xMin, yMin, _, xMax, yMax, _ = self:getBounds()
+	xMin, yMin, _ = self:modelToWorld( xMin, yMin, 0 )
+	xMax, yMax, _ = self:modelToWorld( xMax, yMax, 0 )
 	return xMin, yMin, xMax, yMax
 end
-
 
 return E

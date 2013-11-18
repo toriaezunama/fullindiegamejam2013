@@ -35,7 +35,7 @@ viewport:setOffset( -1, 1 )
 --==== Layers ====
 local world = GameWorld.new()
 Globals.camera = Camera.new()
-world:setCamera( Globals.camera:getMOAICamera() )
+world:setCamera( Globals.camera )
 world:setViewport( viewport )
 MOAISim.pushRenderPass( world ) -- DEPRICATED
 Globals.world = world

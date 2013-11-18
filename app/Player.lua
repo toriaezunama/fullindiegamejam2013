@@ -26,10 +26,10 @@ function Player:init()
 	-- 16 x 16 sprites
 	self:setUpSprite( Globals.kASSETS .. "characters-32x48.png" , 32, 48, AnimData.punk, 'Player'  )	
 	
-	self.prop:play( "idle-up", false )	
+	self:faceUp()
 
 	-- Place pivot near feet
-	-- self.prop:setPiv( 0, 20 )
+	self:setPiv( 0, 20 )
 
 	self.collisionType = 'col-player'
 	self:setCollisionRect( -10, -2, 10, 24 )
@@ -38,8 +38,7 @@ end
 -- Singleton
 local player = Player()
 function player:update( deltatime )
-	local sprite = self.prop
-	local dist = 100 * deltatime
+	local dist = 200 * deltatime
 	local distX = dist
 	local distY = dist
 	local cos45 = 0.70710678118
@@ -66,7 +65,7 @@ function player:update( deltatime )
 	local velocityX = dirX * distX
 	local velocityY = dirY * distY
 
-	local startX, startY = sprite:getLoc()
+	local startX, startY = self:getLoc()
 	local step = 0.5
 	local endX = startX + velocityX	
 	local endY = startY + velocityY
@@ -76,7 +75,7 @@ function player:update( deltatime )
 		local stepX = step * dirX
 		for x = startX, endX, stepX do
 			self:setX( x )
-			self.prop:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
+			self:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
 			if self:collide( 'col-wall' ) then 
 				self:setX( x - stepX )
 				break
@@ -87,7 +86,7 @@ function player:update( deltatime )
 		local stepY = step * dirY
 		for y = startY, endY, stepY do
 			self:setY( y )
-			self.prop:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
+			self:forceUpdate() -- !!! This MUST BE CALLED else internally moai doesn't update the matrix used in prop:modelToWorld() !!!!
 			if self:collide( 'col-wall' ) then 
 				self:setY( y - stepY )
 				break
@@ -97,30 +96,30 @@ function player:update( deltatime )
 
 	-- print( "updating", deltatime )
 	if Input.UP then
-		sprite:play( "walk-up", true )
+		self:walkUp()
 	elseif Input.DOWN then
 		if not (Input.LEFT or Input.RIGHT ) then
-			sprite:play( "walk-down", true )
+			self:walkDown()
 		end
 	end
 	if Input.LEFT then
 		if not Input.UP then
-			sprite:play( "walk-left", true )
+			self:walkLeft()
 		end
 	elseif Input.RIGHT then
 		if not Input.UP then
-			sprite:play( "walk-right", true )
+			self:walkRight()
 		end
 	end
 	if Input.NEUTRAL == true then
 		if Input.PREV_UP then
-			sprite:play( "idle-up", false )	
+			self:faceUp()
 		elseif Input.PREV_DOWN then
-			sprite:play( "idle-down", false )	
+			self:faceDown()
 		elseif Input.PREV_LEFT then
-			sprite:play( "idle-left", false )	
+			self:faceLeft()
 		elseif Input.PREV_RIGHT then
-			sprite:play( "idle-right", false )	
+			self:faceRight()
 		end
 	end
 

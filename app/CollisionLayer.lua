@@ -24,7 +24,7 @@ local class = Utils.class
 local G = {}
 setfenv( 1, G )
 
-new = class( 'CollisionLayer', Entity.new )
+new = class( 'CollisionLayer' )
 new.__index = MOAIGrid.getInterfaceTable()
 new.__moai_class = MOAIGrid
 
@@ -35,8 +35,6 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 
 	assert( tonumber( tcx ) and tonumber( tcy ) and tonumber( gidbase ) )
 	
-	new.__super.init(self)
-
 	-- print( tileDeck, tw, th, tcx, tcy, tiledata, gidbase )
 
 	self:setSize( tcx, tcy, tw, th )
@@ -47,9 +45,9 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 		end
 	end
 
-	self.collisionType = 'col-wall'
+	-- self.collisionType = 'col-wall'
 
----[[
+--[[
 	-- x,y to cell address
 	print( "locToCellAddr", self:locToCellAddr( 44,102 ) ) --> 152:  x,
 

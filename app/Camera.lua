@@ -27,6 +27,8 @@ local C = {}
 setfenv( 1, C )
 
 new = class( "Camera", Entity.new )
+new.__index = MOAICamera2D.getInterfaceTable()
+new.__moai_class = MOAICamera2D
 
 -- Utils.printClassInfo( new )
 
@@ -35,9 +37,8 @@ function new:init()
 
 	new.__super.init( self )
 
-	self.prop = MOAICamera2D.new()
 	-- Camera 0, 0 starts at top, left so centre
-	self.prop:setPiv( Globals.HALF_SCREEN_WIDTH, Globals.HALF_SCREEN_HEIGHT )
+	self:setPiv( Globals.HALF_SCREEN_WIDTH, Globals.HALF_SCREEN_HEIGHT )
 end
 
 function new:update( deltatime )
@@ -59,10 +60,6 @@ function new:update( deltatime )
 	else 
 		self:setY( py )
 	end
-end
-
-function new:getMOAICamera()
-	return self.prop
 end
 
 return C

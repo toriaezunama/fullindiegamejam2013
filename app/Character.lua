@@ -23,19 +23,35 @@ function new:init()
 end
 
 function new:faceLeft()
-	self.prop:play( "idle-left", false )
+	self.sprite:play( "idle-left", false )
 end	
 
 function new:faceRight()
-	self.prop:play( "idle-right", false )
+	self.sprite:play( "idle-right", false )
 end	
 
 function new:faceUp()
-	self.prop:play( "idle-up", false )
+	self.sprite:play( "idle-up", false )
 end	
 
 function new:faceDown()
-	self.prop:play( "idle-down", false )
+	self.sprite:play( "idle-down", false )
+end	
+
+function new:walkLeft()
+	self.sprite:play( "walk-left", true )
+end	
+
+function new:walkRight()
+	self.sprite:play( "walk-right", true )
+end	
+
+function new:walkUp()
+	self.sprite:play( "walk-up", true )
+end	
+
+function new:walkDown()
+	self.sprite:play( "walk-down", true )
 end	
 
 -- animInfo: { { name="anim-name", frames = { 1,3,56, etc } }, ... }
@@ -49,8 +65,9 @@ function new:setUpSprite( texturePath, w, h, animInfo, name )
 	for i, anim in ipairs( animInfo ) do
 		sprite:addAnim( anim.name, anim.frames )
 	end
+	sprite:setProp( self )
 
-	self.prop = sprite
+	self.sprite = sprite
 
 	-- sprite:dump()
 end

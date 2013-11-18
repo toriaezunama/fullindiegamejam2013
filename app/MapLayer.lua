@@ -1,4 +1,5 @@
 local Utils 			= _G.Utils
+local Entity 			= _G.Entity
 
 local tostring			= _G.tostring
 local require 			= _G.require
@@ -23,9 +24,7 @@ local class = Utils.class
 local L = {}
 setfenv( 1, L )
 
-new = class( 'MapLayer' )
-new.__index = MOAIProp.getInterfaceTable()
-new.__moai_class = MOAIProp
+new = class( 'MapLayer', Entity.new )
 
 -- Utils.printClassInfo( new )
 

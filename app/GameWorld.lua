@@ -35,22 +35,26 @@ function new:start()
 	
 	--==== Map layers ====
 	Globals.collisionLayer = map:getCollisionLayer()
-	self:add( Globals.collisionLayer )
+	-- self:add( Globals.collisionLayer )
 
 	local groundLayer = map:getMapLayerForName( "ground" )
 	local wallLayer = map:getMapLayerForName( "walls" )
+	local decorationLayer = map:getMapLayerForName( "decoration" )
 	local debugLayer = map:getMapLayerForName( "debug" )
 
-	self:insertProp( groundLayer )
-	self:insertProp( wallLayer )
-	self:insertProp( debugLayer )
+	-- z-ordering
+	self:add( groundLayer )
+	self:add( wallLayer )
+	self:add( Globals.player )
+	self:add( decorationLayer )
+
+	self:add( debugLayer )
 
 	local objectList = map:getObjectList()
 	for i, obj in ipairs( objectList ) do
 			-- print( obj.type )
 		if obj.type == 'player' then
 			Globals.player:setLoc( obj.x, obj.x )
-			self:add( Globals.player )
 		elseif obj.type == 'goldKnight' then
 			local gk = GoldKnight.new()
 			gk:setLoc( obj.x, obj.y )
@@ -58,10 +62,10 @@ function new:start()
 		end
 	end
 
-
 	self.map = map
 	self.groundLayer = groundLayer
 	self.wallLayer = wallLayer
+	self.decorationLayer = decorationLayer
 	self.debugLayer = debugLayer
 end
 

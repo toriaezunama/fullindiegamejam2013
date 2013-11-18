@@ -21,9 +21,7 @@ local class = Utils.class
 local S = {}
 setfenv( 1, S )
 
-new = class()
-new.__index = MOAIProp.getInterfaceTable()
-new.__moai_class = MOAIProp
+new = class( 'Sprite' )
 
 -- Utils.printClassInfo( new )
 
@@ -44,11 +42,19 @@ function new:init( path, sw, sh, name )
 	spriteSheet:setSize( textureW/spriteW, textureH/spriteH )
 	spriteSheet:setRect( -hSpriteW, hSpriteH, hSpriteW, -hSpriteH )
 
-	self:setDeck( spriteSheet )
 	self.deck = spriteSheet
 	self.texture = texture
 	
 	self.anims = {}
+end
+
+function new:setProp( prop )
+	self.prop = prop
+	prop:setDeck( self.deck )
+
+	for name, anim in pairs( self.anims ) do
+		anim:setLink( 1, anim.curve, prop, MOAIProp.ATTR_INDEX )
+	end
 end
 
 -- name: animation name, used in .play()
@@ -78,7 +84,7 @@ function new:addAnim( name, animFrames, fps )
 	local anim = MOAIAnim.new()
 	anim:setCurve(curve)
 	anim:reserveLinks(1)
-	anim:setLink(1, curve, self, MOAIProp.ATTR_INDEX )
+	anim.curve = curve
 
 	self.anims[ name ] = anim
 end

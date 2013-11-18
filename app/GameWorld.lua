@@ -3,6 +3,8 @@ local Globals 			= _G.Globals
 local Entity 			= _G.Entity
 local World 			= _G.World
 local Player 			= _G.Player
+local Pickup 			= _G.Pickup
+local Shotgun 			= _G.Shotgun
 local Map 				= _G.Map
 local GoldKnight 		= _G.GoldKnight
 
@@ -15,6 +17,7 @@ local string 			= _G.string
 local table 			= _G.table
 
 local MOAILayer 		= _G.MOAILayer
+local MOAITexture    = _G.MOAITexture 
 
 local class = Utils.class
 
@@ -32,33 +35,56 @@ end
 
 function new:start()
 	local map = Map.new( Globals.kLEVELS .. "level1" )
-	
+
 	--==== Map layers ====
 	Globals.collisionLayer = map:getCollisionLayer()
 	-- self:add( Globals.collisionLayer )
 
 	local groundLayer = map:getMapLayerForName( "ground" )
+	local groundDecorationLayer = map:getMapLayerForName( "ground-decoration" )
 	local wallLayer = map:getMapLayerForName( "walls" )
 	local decorationLayer = map:getMapLayerForName( "decoration" )
 	local debugLayer = map:getMapLayerForName( "debug" )
 
-	-- z-ordering
 	self:add( groundLayer )
+	groundLayer:setPriority( 100 )
+
+	self:add( groundDecorationLayer )
+	groundDecorationLayer:setPriority( 101 )
+
 	self:add( wallLayer )
-	self:add( Globals.player )
+	wallLayer:setPriority( 105 )
+
 	self:add( decorationLayer )
+	decorationLayer:setPriority( 3000 )
 
 	self:add( debugLayer )
+	debugLayer:setPriority( 3001 )
+
+	-- z-ordering
+	local entityPriority = 200
 
 	local objectList = map:getObjectList()
 	for i, obj in ipairs( objectList ) do
 			-- print( obj.type )
-		if obj.type == 'player' then
-			Globals.player:setLoc( obj.x, obj.x )
-		elseif obj.type == 'goldKnight' then
-			local gk = GoldKnight.new()
-			gk:setLoc( obj.x, obj.y )
-			self:add( gk )
+		local entity 
+		if obj.type == 'spawn' then
+			if obj.name == 'player' then
+				entity = Globals.player
+			elseif obj.name == 'goldKnight' then
+				entity = GoldKnight.new()
+			end
+		elseif obj.type == 'pickup' then
+			if obj.name == 'shotgun' then
+				-- local deck = map:getDeckForTilesetName( 'objects' )
+				entity = Shotgun.new()
+			end
+		end
+		if entity then
+			self:add( entity )
+			entity:setLoc( obj.x, obj.x )
+			entity:setPriority( entityPriority )
+			entityPriority = entityPriority + 1
 		end
 	end
 

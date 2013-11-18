@@ -59,11 +59,12 @@ function new:init( path )
 	self.deckMap = deckMap
 	for i, tileSet in ipairs( mapData.tilesets ) do
 		local texture = MOAITexture.new()
-		print( tileSet.image )
+		-- print( tileSet.image )
 		local _, e = tileSet.image:find( "../assets/" )
 		local path = tileSet.image:sub( e + 1 ) 
 		-- print( path )
 		texture:load( Globals.kASSETS .. path )
+		texture:setFilter( MOAITexture.GL_NEAREST )
 
       local tileCntX = tileSet.imagewidth / tileSet.tilewidth
       local tileCntY = tileSet.imageheight / tileSet.tileheight
@@ -81,7 +82,7 @@ function new:init( path )
 		deckMap[ tileSet.name ] = tileDeck
 	end
 
-	Utils.printr( tileSets )
+	-- Utils.printr( tileSets )
 
 	local mapLayersMap = {}
 	self.mapLayersMap = mapLayersMap
@@ -110,7 +111,7 @@ function new:init( path )
   
 	end
 
-	Utils.printr( mapLayersMap )
+	-- Utils.printr( mapLayersMap )
 	-- TODO: Unload module
 end
 
@@ -119,12 +120,12 @@ function new:processObjects( layer )
    -- visible = true,
    -- opacity = 1,
    for i, obj in ipairs( layer.objects ) do
-   	if obj.type == "spawn" then
-			table.push( self.objects, {
-				type=obj.name,
-				x=obj.x,
-				y=obj.y
-			} )
+		table.push( self.objects, {
+			type=obj.type,
+			name=obj.name,
+			x=obj.x,
+			y=obj.y
+		} )
 				-- shape = "ellipse",
 				-- width = 0,
 				-- height = 0,
@@ -132,7 +133,6 @@ function new:processObjects( layer )
 				-- visible = true,
 				-- properties = {}
    		
-   	end
    end
 
    -- objects = {
@@ -161,6 +161,10 @@ function new:getMapLayerForName( name )
 	return assert( self.mapLayersMap[ name ] )
 end
 
+function new:getDeckForTilesetName( name )
+	return assert( self.deckMap[ name ] )
+end
+
 function new:_getDeckForGid( gid )
 	for tileSetName, deck in pairs( self.deckMap ) do
 		if gid >= deck.firstgid and gid <= deck.lastgid then
@@ -179,34 +183,3 @@ function new:getObjectList()
 end
 
 return M
-
-
--- --==== Load in tileset ====
--- local tileDeck = MOAITileDeck2D.new ()
--- tileDeck:setTexture( "numbers.png" )
--- tileDeck:setSize( TILE_CNT_X, TILE_CNT_Y )
--- tileDeck:setRect( -0.5, -0.5, 0.5, 0.5 )
-
--- --==== Tilemap ====
--- local grid = MOAIGrid.new()
--- grid:setSize( 8, 8, TILE_SIZE, TILE_SIZE )
--- --grid:setRepeat ( true ) -- wrap the grid when drawing
-
--- local map = {
--- 	{ 1, 2, 3, 4, 5, 6, 7, 8 },
--- 	{ 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10 },
--- 	{ 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18 },
--- 	{ 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20 },
--- 	{ 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28 },
--- 	{ 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30 },
--- 	{ 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38 },
--- 	{ 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x40 },
--- }
--- for i, row in ipairs( map ) do
--- 	grid:setRow( i, unpack( row ) )
--- end
-
--- --==== Grid deck ====
--- local gridDeck = MOAIGridDeck2D.new()
--- gridDeck:setGrid( grid )
--- gridDeck:setDeck( tileDeck )

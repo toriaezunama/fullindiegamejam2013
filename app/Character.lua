@@ -22,6 +22,22 @@ function new:init()
 	new.__super.init(self)
 end
 
+function new:faceLeft()
+	self.prop:play( "idle-left", false )
+end	
+
+function new:faceRight()
+	self.prop:play( "idle-right", false )
+end	
+
+function new:faceUp()
+	self.prop:play( "idle-up", false )
+end	
+
+function new:faceDown()
+	self.prop:play( "idle-down", false )
+end	
+
 -- animInfo: { { name="anim-name", frames = { 1,3,56, etc } }, ... }
 function new:setUpSprite( texturePath, w, h, animInfo, name )
 	assert( Utils.isTable( animInfo ) and Utils.isString( texturePath ) )

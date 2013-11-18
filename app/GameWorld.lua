@@ -34,7 +34,8 @@ function new:start()
 	local map = Map.new( Globals.kLEVELS .. "level1" )
 	
 	--==== Map layers ====
-	self:add( map:getCollisionLayer() )
+	Globals.collisionLayer = map:getCollisionLayer()
+	self:add( Globals.collisionLayer )
 
 	local groundLayer = map:getMapLayerForName( "ground" )
 	local wallLayer = map:getMapLayerForName( "walls" )

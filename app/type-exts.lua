@@ -19,3 +19,12 @@ function table.inArray( t, obj )
 	end
 	return false
 end
+
+function coroutine.sleep( time )
+    local startTime = MOAISim.getDeviceTime()
+    local elapsed = 0
+    while time > elapsed do
+        coroutine:yield()
+        elapsed = MOAISim.getDeviceTime() - startTime
+    end
+end

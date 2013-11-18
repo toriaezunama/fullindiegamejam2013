@@ -7,6 +7,12 @@ local Character 		= _G.Character
 local AnimData 		= _G.AnimData
 
 local print 			= _G.print
+local assert 			= _G.assert
+local coroutine 		= _G.coroutine
+local MOAICoroutine  = _G.MOAICoroutine
+
+local MOAIPathFinder = _G.MOAIPathFinder
+local MOAIThread		= _G.MOAIThread
 
 local class = Utils.class
 
@@ -15,6 +21,9 @@ setfenv( 1, K )
 
 new = class( 'GoldKnight', Character.new )
 -- Utils.printClassInfo( Player )
+
+local STATE_CHASE = 1
+local STATE_LOOK_AROUND = 2
 
 function new:init()
 	print( 'GoldKnight:init' )
@@ -29,85 +38,87 @@ function new:init()
 
 	self.collisionType = 'col-enemy'
 	self:setCollisionRect( -10, -10, 10, 10 )
+
+	self.state = STATE_CHASE
 end
 
 function new:update( deltatime )
-	-- local sprite = self.prop
-	-- local dist = 100 * deltatime
-	-- local distX = dist
-	-- local distY = dist
-	-- local cos45 = 0.70710678118
-	-- local x, y = self.prop:getLoc()
+	local state = self.state
+	local sprite = self.prop
 
-	-- -- Diagonal
-	-- if (Input.UP or Input.DOWN) and (Input.LEFT or Input.RIGHT) then
-	-- 	distX = distX * cos45
-	-- 	distY = distY * cos45
-	-- end
+	if state == STATE_CHASE then
+		local collisionLayer = Globals.collisionLayer
+		local player = Globals.player
+		local startCell = collisionLayer:getCellAddressForEntity( self )
+		local targetCell = collisionLayer:getCellAddressForEntity( player )
+
+		-- print( startCell, targetCell )
+		
+		local pathFinder = MOAIPathFinder.new()
+		pathFinder:setGraph( collisionLayer )
+		pathFinder:init( startCell, targetCell )
+
+		while pathFinder:findPath( 3 ) do
+			-- print( 'finding...' )
+			
+			-- 1) Calculate over several frames
+			coroutine:yield()
+		end
+
+		local pathSize = pathFinder:getPathSize()
+		assert( pathSize > 0 )
+		for i = 1, pathSize do
+			local cellAddr = pathFinder:getPathEntry( i )
+
+			local x, y = self:getLoc()
+			local ptx, pty = collisionLayer:locToCoord( x, y )
+			local tx, ty = collisionLayer:cellAddrToCoord( cellAddr )
+			local nx, ny = collisionLayer:getTileLoc( tx, ty )
+			-- print( ptx, pty, tx, ty, nx, ny )
+
+			-- Play relevent animation
+			if pty < ty then
+				sprite:play( "walk-down", true )
+			elseif pty > ty then
+				sprite:play( "walk-up", true )
+			end
+			if ptx < tx then
+				sprite:play( "walk-right", true )
+			elseif ptx > tx then
+				sprite:play( "walk-left", true )
+			end
 	
-	-- local velocityX = 0
-	-- local velocityY = 0
+			-- 2) Wait to arrive
+			MOAIThread.blockOnAction( self:moveLoc( nx - x, ny - y, 0.4 ) ) 
 
-	-- if Input.UP then
-	-- 	velocityY = -distY
-	-- elseif Input.DOWN then
-	-- 	velocityY = distY
-	-- end
-	-- if Input.LEFT then
-	-- 	velocityX = -distX
-	-- elseif Input.RIGHT then
-	-- 	velocityX = distX
-	-- end
+			if pty < ty then
+				self:faceDown()
+			elseif pty > ty then
+				self:faceUp()
+			end
+			if ptx < tx then
+				self:faceRight()
+			elseif ptx > tx then
+				self:faceLeft()
+			end
+	
+		end
+		-- Arrived
+		self.state = STATE_LOOK_AROUND
 
-	-- local c = self:collide( 'walls' )
-
-	-- -- Only test collision if we are moving
-	-- if velocityX ~= 0 or velocityY ~= 0 then
-	-- 	local radius = 40 -- radius of circle around character
-	-- 	-- if dist > radius then -- but if we are moving further then
-	-- 	-- 	radius = dist 
-	-- 	-- end
-	-- 	--local collided, colX, colY = Globals.collisionLayer:collide( x, y, 16, velocityX, velocityY )
-	-- 	-- if collided then
-	-- 	-- 	Globals.debugLabel:setText( "collide" )
-	-- 	-- else
-	-- 	-- 	Globals.debugLabel:setText( "" )
-	-- 	-- end
-	-- end
-	-- self:addX( velocityX )
-	-- self:addY( velocityY )
-
-	-- -- Globals.collisionLayer
-
-	-- -- print( "updating", deltatime )
-	-- if Input.UP then
-	-- 	sprite:play( "walk-up", true )
-	-- elseif Input.DOWN then
-	-- 	if not (Input.LEFT or Input.RIGHT ) then
-	-- 		sprite:play( "walk-down", true )
-	-- 	end
-	-- end
-	-- if Input.LEFT then
-	-- 	if not Input.UP then
-	-- 		sprite:play( "walk-left", true )
-	-- 	end
-	-- elseif Input.RIGHT then
-	-- 	if not Input.UP then
-	-- 		sprite:play( "walk-right", true )
-	-- 	end
-	-- end
-	-- if Input.NEUTRAL then
-	-- 	if Input.PREV_UP then
-	-- 		sprite:play( "idle-up", false )	
-	-- 	elseif Input.PREV_DOWN then
-	-- 		sprite:play( "idle-down", false )	
-	-- 	elseif Input.PREV_LEFT then
-	-- 		sprite:play( "idle-left", false )	
-	-- 	elseif Input.PREV_RIGHT then
-	-- 		sprite:play( "idle-right", false )	
-	-- 	end
-	-- end
-
+	elseif state == STATE_LOOK_AROUND then		
+		coroutine.sleep( 0.3 )
+		self:faceDown()
+		coroutine.sleep( 0.4 )
+		self:faceUp()
+		coroutine.sleep( 0.5 )
+		self:faceRight()
+		coroutine.sleep( 0.5 )
+		self:faceLeft()
+		coroutine.sleep( 0.2 )
+		self.state = STATE_CHASE
+		print( 'END' )
+	end
 end
 
 return K

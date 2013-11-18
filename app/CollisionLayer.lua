@@ -49,9 +49,9 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 
 	self.collisionType = 'col-wall'
 
---[[
-	-- print( self:getCellAddr( 2, 2 ) ) -- tile x,y to y * w + x
-	print( "locToCellAddr", self:locToCellAddr( 1,2 ) ) --> 1
+---[[
+	-- x,y to cell address
+	print( "locToCellAddr", self:locToCellAddr( 44,102 ) ) --> 152:  x,
 
 	-- Transforms a coordinate in grid space into a tile index
 	print( "locToCoord", self:locToCoord( 1, 1) ) --> 1, 1
@@ -72,8 +72,18 @@ function new:init( tw, th, tcx, tcy, tiledata, gidbase )
 	print( "getTileLoc", self:getTileLoc( 1, 2, MOAIGridSpace.TILE_CENTER ) ) --> 16, 48
 
 	print( "getTile", self:getTile( -10, -10 ) ) --> 0 (seems to clip to 0 if out of range)
-]]
+--]]
 
+end
+
+function new:getCellAddressForEntity( entity )
+	return self:locToCellAddr( entity:getLoc() )
+end
+
+function new:getLocForCellAddr( cellAddr )
+	assert( cellAddr )
+	local tx, ty = self:cellAddrToCoord( cellAddr )
+	return self:getTileLoc( tx, ty )
 end
 
 function new:collide( aMinX, aMinY, aMaxX, aMaxY )
@@ -83,25 +93,25 @@ function new:collide( aMinX, aMinY, aMaxX, aMaxY )
 
 	-- TL
 	local tx, ty = self:locToCoord( aMinX, aMinY )
-	if self:getTile( tx, ty ) ~= 0 then
+	if self:getTile( tx, ty ) == 0 then
 		return true
 	end
 
 	-- TR
 	tx, ty = self:locToCoord( aMaxX, aMinY )
-	if self:getTile( tx, ty ) ~= 0 then
+	if self:getTile( tx, ty ) == 0 then
 		return true
 	end
 
 	-- BL
 	tx, ty = self:locToCoord( aMinX, aMaxY )
-	if self:getTile( tx, ty ) ~= 0 then
+	if self:getTile( tx, ty ) == 0 then
 		return true
 	end
 
 	-- BR
 	tx, ty = self:locToCoord( aMaxX, aMaxY )
-	if self:getTile( tx, ty ) ~= 0 then
+	if self:getTile( tx, ty ) == 0 then
 		return true
 	end
 

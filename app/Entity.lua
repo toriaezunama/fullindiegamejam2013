@@ -14,6 +14,7 @@ local MOAIProp 		= _G.MOAIProp
 local MOAISim 			= _G.MOAISim
 local MOAICoroutine 	= _G.MOAICoroutine
 local MOAITransform  = _G.MOAITransform
+local MOAIEaseType   = _G.MOAIEaseType
 local coroutine 		= _G.coroutine
 
 local class = Utils.class
@@ -84,6 +85,16 @@ function new:setLayer( layer )
     end
    
     return self -- chaining    
+end
+
+function new:moveLoc( x, y, time, easing )
+	local prop = self.prop
+	if prop then
+		easing = easing or MOAIEaseType.LINEAR
+		local driver = prop:moveLoc( x, y, 0, time, easing )
+		-- print( ">>", driver )
+		return driver
+	end
 end
 
 function new:setLoc( x, y )
